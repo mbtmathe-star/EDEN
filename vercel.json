@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/bookingrequest.asp", "destination": "/bookingrequest.asp/index.html" }
+  ]
+}

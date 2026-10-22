@@ -1,20 +1,10 @@
-# Leap Park Booking (design demo)
+# Eden – Lodge, Restaurant & Conference Centre (Kimberley)
 
-Click-through design demo of a trampoline-park booking system. Two linked views on one in-memory store:
+Static clone of https://www.welcometoeden.co.za with the Kimberley Trampoline Park added as one of the offerings.
 
-- **Website** - landing page and the ticket booking journey (individual, party, group).
-- **POS - Front desk** - today dashboard, bookings, new sale, party pods, payments and cash-up, customers, pricing and rules.
+- `/` and `/p*`, `/gallery`, `/enquiry`, `/bookingrequest.asp` – the Eden site (cloned as-is)
+- `/trampoline-park/` – the trampoline park booking demo (its own design, self-contained in that folder)
 
-Starts empty. Book on the Website tab and it appears at the front desk in real time; capacity, payments and status stay in sync both ways. Mock names and prices throughout. State lives in memory only, so a page refresh resets it.
+No build step; deploy as a static site.
 
-## Run
-
-No build step. Open `index.html` in a browser, or serve the folder:
-
-    npx serve .
-
-## Structure
-
-    index.html          page shell
-    assets/styles.css   all styles (light and dark)
-    assets/app.js       all logic (single IIFE, no dependencies)
+Not yet working: the enquiry and booking forms post to server-side ASP scripts (`ContactFormSubmit.asp`, `BookingRequestS.asp`) that don't exist in this static copy.

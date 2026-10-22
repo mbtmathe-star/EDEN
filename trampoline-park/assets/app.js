@@ -213,7 +213,7 @@ var I={
  people:'<svg class="ico" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="15" cy="14" r="5"/><path d="M5 33c0-6 4-10 10-10s10 4 10 10"/><circle cx="29" cy="15" r="4"/><path d="M29 24c4 0 7 3 7 8"/></svg>',
  card:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5.5" width="18" height="13" rx="3"/><path d="M3 10h18"/></svg>',
  shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>',
- logo:'<img src="assets/logo.png" alt="Kimberley Trampoline Park">'
+ logo:'<img src="/trampoline-park/assets/logo.png" alt="Kimberley Trampoline Park">'
 };
 
 var stepsNow=function(){return S.type?FLOW[S.type]:['details','type']};
@@ -232,7 +232,7 @@ var chipsHTML=function(){
 };
 
 /* landing page */
-var heroArt='<img class="hero-logo" src="assets/logo.png" alt="Kimberley Trampoline Park">';var _oldArt='<svg class="art" viewBox="0 0 460 270" role="img" aria-label="A jumper arcing over a trampoline"><ellipse cx="230" cy="238" rx="205" ry="30" fill="var(--primary)" opacity=".16"/><ellipse cx="230" cy="224" rx="190" ry="32" fill="var(--primary)"/><ellipse cx="230" cy="218" rx="168" ry="24" fill="var(--primary-soft)"/><path d="M60 222c10-130 330-130 340 0" stroke="var(--ink)" stroke-width="2.5" stroke-dasharray="3 9" stroke-linecap="round" fill="none" opacity=".55"/><ellipse cx="230" cy="222" rx="32" ry="7" fill="var(--primary)" opacity=".35"/><circle cx="230" cy="64" r="26" fill="var(--cta)" stroke="var(--ink)" stroke-width="3"/><path d="M214 62c8 8 24 8 32 0" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" fill="none"/></svg>';
+var heroArt='<img class="hero-logo" src="/trampoline-park/assets/logo.png" alt="Kimberley Trampoline Park">';var _oldArt='<svg class="art" viewBox="0 0 460 270" role="img" aria-label="A jumper arcing over a trampoline"><ellipse cx="230" cy="238" rx="205" ry="30" fill="var(--primary)" opacity=".16"/><ellipse cx="230" cy="224" rx="190" ry="32" fill="var(--primary)"/><ellipse cx="230" cy="218" rx="168" ry="24" fill="var(--primary-soft)"/><path d="M60 222c10-130 330-130 340 0" stroke="var(--ink)" stroke-width="2.5" stroke-dasharray="3 9" stroke-linecap="round" fill="none" opacity=".55"/><ellipse cx="230" cy="222" rx="32" ry="7" fill="var(--primary)" opacity=".35"/><circle cx="230" cy="64" r="26" fill="var(--cta)" stroke="var(--ink)" stroke-width="3"/><path d="M214 62c8 8 24 8 32 0" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" fill="none"/></svg>';
 var landingHTML=function(){
  var c={type:'individual',duration:1,date:todayS(),slot:null,qty:{}},lab='Today',hrs=slotHours(c).filter(function(h){var k=slotState(c,h).k;return k==='ok'||k==='low'});
  if(!hrs.length){c.date=iso(addDays(todayD(),1));lab='Tomorrow';hrs=slotHours(c).filter(function(h){var k=slotState(c,h).k;return k==='ok'||k==='low'})}
