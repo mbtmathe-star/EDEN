@@ -101,6 +101,7 @@ def head(title, desc, path, hero_img=None):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&family=Pinyon+Script&display=swap" rel="stylesheet">
+<script>(function(h){{var r=function(){{h.classList.add('fonts-ready')}};if(document.fonts&&document.fonts.ready)document.fonts.ready.then(r);setTimeout(r,2500)}})(document.documentElement)</script>
 <link rel="stylesheet" href="/css/eden.css?v={ver('/css/eden.css')}">
 {pre}
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WWD577N0KL"></script>
@@ -160,6 +161,7 @@ def footer():
 <div class="ftr-bot"><span>&copy; <span id="yr">2026</span> Eden Est. All rights reserved.</span><nav aria-label="Legal"><a href="{PRIV}">Privacy Policy</a><a href="{COOK}">Cookie Policy</a></nav></div>
 </div>
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
 <script src="/js/eden.js?v={ver('/js/eden.js')}" defer></script>
 </body>
 </html>
@@ -191,7 +193,7 @@ def split(pic, eyebrow, title, body, cta=None, rev=False, tag='', wide=False, ex
     btn = f'<a class="btn" href="{cta[0]}">{cta[1]} {ARROW}</a>' if cta else ''
     sub = f'<p class="sub">{eyebrow}</p>' if eyebrow else ''
     return f'''<div class="split{' rev' if rev else ''}">
-<div class="split-img"><div class="reveal" data-speed="0.05">{pic}</div></div>
+<div class="split-img"><div class="reveal">{pic}</div></div>
 <div class="split-txt rv d1"><h2>{title}</h2>{sub}{body}{extra}{btn}</div>
 </div>'''
 
@@ -205,7 +207,7 @@ def feature(title, sub, text, pics, cta=None, rev=False, pq=''):
 </div>'''
     btn = f'<a class="btn" href="{cta[0]}">{cta[1]} {ARROW}</a>' if cta else ''
     return f'''<div class="feature{' rev' if rev else ''}">
-<div class="feature-pic"><div class="reveal" data-speed="0.06">{pics}</div></div>
+<div class="feature-pic"><div class="reveal">{pics}</div></div>
 <div class="feature-txt rv d1"><h2>{title}</h2><p class="sub">{sub}</p><p class="prose">{text}</p>{btn}</div>
 </div>'''
 
@@ -327,11 +329,11 @@ def restaurant():
 </div></section>
 <section class="sec" style="padding-top:0" id="menu"><div class="wrap">
 <div class="dine">
-<div class="dine-pic"><div class="reveal" data-speed="0.08">{img(G(21), 'Sharing platter at Eden on the Grill', w=1280)}</div></div>
+<div class="dine-pic"><div class="reveal">{img(G(21), 'Sharing platter at Eden on the Grill', w=1280)}</div></div>
 <div class="dine-txt rv"><h2>Hearty grills &amp; platters</h2><p class="sub">Our menu &middot; daily specials</p>
 <p>Ribs, wings, burgers and generous sharing platters, made to be enjoyed together, with a fully stocked bar, a pool table and the big game on screen. Be sure to ask about the daily specials.</p>
 <a class="btn" href="{CON}?kind=Restaurant%20table#enquire">Reserve a Table {ARROW}</a></div>
-<div class="dine-pic"><div class="reveal" data-speed="0.12">{img(E('lounge-night'), 'The bar and lounge at Eden on the Grill', w=1280)}</div></div>
+<div class="dine-pic"><div class="reveal">{img(E('lounge-night'), 'The bar and lounge at Eden on the Grill', w=1280)}</div></div>
 </div>
 </div></section>
 {band(E('patio-lights'), 'Outdoors', 'Dinner under <em>Kimberley skies</em>')}

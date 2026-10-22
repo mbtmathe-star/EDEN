@@ -491,3 +491,25 @@ img.sq{aspect-ratio:1/1;object-fit:cover;width:100%}
   .pq-two .l .pq-pic{aspect-ratio:4/5;max-width:520px}
 }
 @media (max-width:767px){.pq-two{margin-top:80px}.pq-two+.pq-feat{margin-top:80px}}
+
+/* ===== motion, final: one effect per element, no competing scroll systems ===== */
+/* smooth scroll (Lenis) — the browser's own smooth scrolling must be off or the two fight */
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
+.lenis.lenis-stopped{overflow:hidden}
+/* photos: settle from 1.1 to 1 when they enter (reference); photo ends whole, frame never moves */
+.reveal,.reveal.settle{clip-path:none;transition:none;overflow:hidden;transform:none}
+.reveal img,.reveal.settle img{transform:scale(1.1);transition:transform 1.3s cubic-bezier(.22,.61,.36,1);backface-visibility:hidden}
+.reveal:not(.in) img{will-change:transform}
+.reveal.in img,.reveal.settle.in img{transform:none}
+/* hero: compositor-only animation */
+.hero .hero-img{will-change:transform,opacity;backface-visibility:hidden}
+.band img{will-change:transform;backface-visibility:hidden}
+/* text eases up a little, never jumps */
+.rv{transform:translateY(22px);transition:opacity 1s ease,transform 1s cubic-bezier(.22,.61,.36,1)}
+.rv.in{transform:none}
+@media (prefers-reduced-motion:reduce){.reveal img,.reveal.settle img{transform:none!important;transition:none}.rv{transform:none}}
+/* hero text waits for the real font, so the heading never jumps when the font arrives */
+html:not(.fonts-ready) .hero-c{visibility:hidden}
+html:not(.fonts-ready) .hero h1 .ln>span,html:not(.fonts-ready) .hero .hero-sub{animation-play-state:paused}

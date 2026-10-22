@@ -1,9 +1,30 @@
-/* Eden site behaviour: header state, menu + booking overlays, scroll reveals, parallax band,
+/* Eden site behaviour: smooth scroll, header state, menu + booking overlays, scroll reveals, parallax band,
    gallery strip + lightbox, enquiry forms (FormSubmit). No dependencies. */
 (function () {
   var d = document, root = d.documentElement, body = d.body;
   root.classList.remove('no-js');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* smooth, gliding scroll like the reference. Native scroll position is kept, so the header,
+     reveals and links keep working; it is paused while an overlay is open. */
+  var lenis = null;
+  if (window.Lenis && !reduce) {
+    lenis = new window.Lenis({ duration: 1.1, smoothWheel: true, easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); } });
+    var loop = function (t) { lenis.raf(t); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop);
+    d.querySelectorAll('a[href^="#"]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var h = a.getAttribute('href'); if (h.length < 2) return;
+        var t = d.querySelector(h); if (!t) return;
+        e.preventDefault(); lenis.scrollTo(t, { offset: -70 });
+      });
+    });
+    d.querySelectorAll('.menu-body,.book-panel').forEach(function (el) { el.setAttribute('data-lenis-prevent', ''); });
+  }
+  function lock(on) {
+    body.classList.toggle('locked', on);
+    if (lenis) { if (on) lenis.stop(); else lenis.start(); }
+  }
 
   /* header: transparent over the hero, solid once scrolled */
   var hdr = d.querySelector('.hdr');
@@ -16,11 +37,11 @@
   var lastFocus = null;
   function openLayer(el) {
     lastFocus = d.activeElement; el.classList.add('open'); el.setAttribute('aria-hidden', 'false');
-    body.classList.add('locked');
+    lock(true);
     var f = el.querySelector('input,select,button,a'); if (f) setTimeout(function () { f.focus(); }, 60);
   }
   function closeLayer(el) {
-    el.classList.remove('open'); el.setAttribute('aria-hidden', 'true'); body.classList.remove('locked');
+    el.classList.remove('open'); el.setAttribute('aria-hidden', 'true'); lock(false);
     if (lastFocus) lastFocus.focus();
   }
   d.querySelectorAll('[data-open]').forEach(function (b) {
@@ -72,38 +93,26 @@
     rv.forEach(function (el) { io.observe(el); });
   } else rv.forEach(function (el) { el.classList.add('in'); });
 
-  /* photos open like a curtain as they come into view */
+  /* photos settle from slightly zoomed to normal as they enter (reference behaviour).
+     The animation waits until the photo is loaded and decoded, so it never pops in half way. */
   var reveals = d.querySelectorAll('.reveal');
+  var settleIn = function (r) {
+    var im = r.querySelector('img');
+    var go = function () { requestAnimationFrame(function () { r.classList.add('in'); }); };
+    if (!im || (im.complete && im.naturalWidth)) { (im && im.decode ? im.decode().catch(function () {}) : Promise.resolve()).then(go); }
+    else { im.addEventListener('load', function () { (im.decode ? im.decode().catch(function () {}) : Promise.resolve()).then(go); }, { once: true }); im.addEventListener('error', go, { once: true }); }
+  };
   if ('IntersectionObserver' in window && !reduce) {
-    /* watch the frame, not the clipped photo: a fully clipped element never reports as visible */
+    /* watch the frame around the photo */
     var rio = new IntersectionObserver(function (es) {
       es.forEach(function (en) {
         if (!en.isIntersecting) return;
-        var r = en.target.querySelector('.reveal'); if (r) r.classList.add('in');
+        var r = en.target.querySelector('.reveal'); if (r) settleIn(r);
         rio.unobserve(en.target);
       });
-    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.05 });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.05 });
     reveals.forEach(function (el) { rio.observe(el.parentNode); });
   } else reveals.forEach(function (el) { el.classList.add('in'); });
-
-  /* photo frames drift slightly slower than the page (reference-style parallax) */
-  var drift = d.querySelectorAll('[data-speed]');
-  if (drift.length && !reduce && window.matchMedia('(min-width: 761px)').matches) {
-    var dTick = false;
-    var move = function () {
-      var vh = window.innerHeight;
-      drift.forEach(function (el) {
-        var r = el.parentNode.getBoundingClientRect();
-        if (r.bottom < -200 || r.top > vh + 200) return;
-        var off = (r.top + r.height / 2 - vh / 2) * parseFloat(el.dataset.speed);
-        el.style.transform = 'translate3d(0,' + off.toFixed(1) + 'px,0)';
-      });
-      dTick = false;
-    };
-    window.addEventListener('scroll', function () { if (!dTick) { dTick = true; requestAnimationFrame(move); } }, { passive: true });
-    window.addEventListener('resize', move);
-    move();
-  }
 
   /* gentle parallax on full-bleed bands */
   var bands = d.querySelectorAll('.band img');
@@ -118,7 +127,9 @@
       });
       tick = false;
     };
-    window.addEventListener('scroll', function () { if (!tick) { tick = true; requestAnimationFrame(par); } }, { passive: true });
+    if (lenis) lenis.on('scroll', par);
+    else window.addEventListener('scroll', function () { if (!tick) { tick = true; requestAnimationFrame(par); } }, { passive: true });
+    window.addEventListener('resize', par);
     par();
   }
 
@@ -147,12 +158,12 @@
       im.src = a.href; im.alt = (a.querySelector('img') || {}).alt || '';
       cnt.textContent = (idx + 1) + ' / ' + cur.length;
     };
-    var close = function () { lb.classList.remove('open'); body.classList.remove('locked'); if (opener) opener.focus(); };
+    var close = function () { lb.classList.remove('open'); lock(false); if (opener) opener.focus(); };
     Object.keys(groups).forEach(function (g) {
       groups[g].forEach(function (a, i) {
         a.addEventListener('click', function (e) {
           e.preventDefault(); opener = a; cur = groups[g]; show(i);
-          lb.classList.add('open'); body.classList.add('locked'); lb.querySelector('.x').focus();
+          lb.classList.add('open'); lock(true); lb.querySelector('.x').focus();
         });
       });
     });
