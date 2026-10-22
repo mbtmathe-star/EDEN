@@ -72,31 +72,6 @@
     rv.forEach(function (el) { io.observe(el); });
   } else rv.forEach(function (el) { el.classList.add('in'); });
 
-  /* home: smooth, gliding scroll like the reference (native scroll position is kept) */
-  if (window.Lenis && !reduce && body.classList.contains('home')) {
-    var lenis = new window.Lenis({ duration: 1.15, smoothWheel: true });
-    var raf = function (t) { lenis.raf(t); requestAnimationFrame(raf); };
-    requestAnimationFrame(raf);
-    d.querySelectorAll('a[href^="#"]').forEach(function (a) {
-      a.addEventListener('click', function (e) {
-        var t = d.querySelector(a.getAttribute('href')); if (t) { e.preventDefault(); lenis.scrollTo(t, { offset: -60 }); }
-      });
-    });
-  }
-
-  /* home: photos settle from 1.1 to 1 and words ease in as they enter (reference behaviour) */
-  var settle = d.querySelectorAll('[data-anim],[data-fade]');
-  if ('IntersectionObserver' in window && !reduce) {
-    var sio = new IntersectionObserver(function (es) {
-      es.forEach(function (en) {
-        if (!en.isIntersecting) return;
-        en.target.classList.add(en.target.hasAttribute('data-anim') ? 'a1' : 'in');
-        sio.unobserve(en.target);
-      });
-    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.05 });
-    settle.forEach(function (el) { sio.observe(el); });
-  } else settle.forEach(function (el) { el.classList.add(el.hasAttribute('data-anim') ? 'a1' : 'in'); });
-
   /* photos open like a curtain as they come into view */
   var reveals = d.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window && !reduce) {

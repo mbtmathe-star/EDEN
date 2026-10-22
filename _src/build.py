@@ -165,33 +165,13 @@ def footer():
 </html>
 '''
 
-def home_footer():
-    links = ''.join(f'<li><a href="{u}">{t}</a></li>' for u, t in NAV_STAY + [(GAL, 'Photo Gallery'), (CON, 'Contact Us'), (PRIV, 'Privacy'), (COOK, 'Cookies')])
-    return f'''</main>
-<footer class="pq-ftr">
-<div class="pq-wrap">
-<div class="pq-ftr-row"><ul>{links}</ul></div>
-<div class="pq-ftr-row b"><img src="/img/logo-dark.png" alt="Eden, a delightful dwelling" width="360" height="119" loading="lazy">
-<ul><li><a href="tel:{TEL}">{TEL_H}</a></li><li><a href="{WA}">WhatsApp</a></li><li><a href="mailto:{MAIL}">{MAIL}</a></li><li><a href="{MAP}" target="_blank" rel="noopener">{ADDR}</a></li></ul>
-<span>&copy; <span id="yr">2026</span> Eden Est.</span></div>
-</div>
-</footer>
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
-<script src="/js/eden.js?v={ver('/js/eden.js')}" defer></script>
-</body>
-</html>
-'''
-
-def page(path, title, desc, content, hero_img=None, plain=False, home=False):
+def page(path, title, desc, content, hero_img=None, plain=False):
     out = path.lstrip('/')
     if out == '' or out.endswith('/'):
         out += 'index.html'
     os.makedirs(os.path.dirname(out) or '.', exist_ok=True)
     content = re.sub(r'<span class="eyebrow[^"]*">.*?</span>', '', content)
-    hdr = header(path, plain)
-    if home:
-        hdr = hdr.replace('<body>', '<body class="home">', 1)
-    doc = head(title, desc, path, hero_img) + '\n' + hdr + '\n' + content + '\n' + (home_footer() if home else footer())
+    doc = head(title, desc, path, hero_img) + '\n' + header(path, plain) + '\n' + content + '\n' + footer()
     open(out, 'w', encoding='utf8', newline='\n').write(doc)
     print('wrote', out)
 
@@ -257,92 +237,43 @@ FAC = ['Secure, free parking', 'Braai facilities and a BBQ / picnic area', 'A we
        'On-site laundry service', 'A refreshing outdoor pool', 'Eden on the Grill restaurant',
        'Wi-Fi throughout the property', 'Kimberley Trampoline Park on site']
 
-def pq_pic(src, alt, cls='', w=1280):
-    return f'<div class="pq-pic{(" " + cls) if cls else ""}" data-anim>{img(src, alt, w=w)}</div>'
-
-def pq_link(href, label):
-    return f'<p class="pq-link"><a href="{href}">{label}</a></p>'
-
 def home():
-    c = f'''<section class="pq-intro">
-{img(G(7), '', 'pq-intro-img', lazy=False)}
-<div class="pq-wrap pq-intro-c"><h1><span class="ln"><span>Welcome to Eden,</span></span><span class="ln"><span>a delightful dwelling.</span></span><span class="pq-h3">Lodge, Restaurant &amp; Conference Centre, <em>Kimberley</em></span></h1></div>
-</section>
-<div class="pq-main" id="start">
-
-<section class="pq-s01"><div class="pq-wrap"><h2 data-fade>Welcome to Eden Lodge and Restaurant in Kimberley, where comfort and luxury meet exceptional service. Our lodge offers a relaxing stay for those seeking a peaceful retreat, our restaurant serves family-friendly dining, and our conference centre is ready for events and meetings of any kind. Eden promises a memorable experience for all who visit.</h2></div></section>
-
-<section class="pq-s02"><div class="pq-wrap pq-row">
-<div class="c66">{pq_pic(E('entrance-night'), 'The entrance to Eden lit up at night')}</div>
-<div class="c33"><div class="pq-txt" data-fade><h3>Kimberley&rsquo;s peaceful retreat</h3>
-<p>Just 5km from Kimberley Airport and 3km from the Diamond Pavilion Mall, Eden is easy to reach and easy to settle into. A lodge, a restaurant and sports bar, a conference centre and a trampoline park, all on one green and welcoming property, day and night.</p></div></div>
+    c = f'''{hero(G(7), '', 'A delightful <em>dwelling</em>', 'Lodge, restaurant, conference centre and trampoline park in Kimberley, where comfort and luxury meet exceptional service.', full=True)}
+<section class="sec intro center" id="start"><div class="narrow rv">
+<span class="script">Welcome to Eden</span>
+<p class="lead">Our lodge offers a relaxing stay with stylish accommodation for those seeking a peaceful retreat. Whether you are travelling for business or leisure, Eden is the perfect place to unwind, connect and enjoy.</p>
+<p class="quote">&ldquo;Eden promises a memorable experience for all who visit.&rdquo;</p>
 </div></section>
-
-<section class="pq-s03"><div class="pq-wrap pq-row">
-<div class="c33"><a href="{ACC}">{pq_pic(E('garden-dining-2'), 'Shaded garden dining at Eden')}</a>
-<div class="pq-txt" data-fade><h3><a href="{ACC}">Take refuge in our greenery</a></h3>
-<p>A sparkling pool, a braai area and quiet gardens to come back to at the end of the day, far from the crowds and close to everything.</p>
-{pq_link(ACC, 'Discover the lodge')}</div></div>
-<div class="c66"><a href="{REST}">{pq_pic(G(30), 'Loaded burger at Eden on the Grill')}</a>
-<div class="pq-txt" data-fade><h3><a href="{REST}">Eden on the Grill</a></h3>
-<p>A fully stocked bar, a pool table and a menu of hearty grills, ribs and generous sharing platters. Relaxed and family-friendly, with the big game on screen and daily specials well worth asking about.</p>
-{pq_link(REST, 'View menu')}</div></div>
+<section class="sec" style="padding-top:0"><div class="wrap">
+{feature('Accommodation', 'The Lodge &middot; from R750 per room',
+  'Superior rooms for two and family rooms for up to four, each with a king-size bed, DSTV, air conditioning, uncapped Wi-Fi and daily housekeeping. A peaceful home-away-from-home for travellers, families and business guests alike.</p><p class="note-box"><strong>Please note:</strong> children aged 0 – 18 are charged 100% of the sharing rate.',
+  img(E('guest-reading-bed'), 'A guest relaxing in bed at Eden Lodge', w=1280),
+  (ACC, 'Book Accommodation'))}
+{feature('Eden on the Grill', 'Restaurant &amp; sports bar',
+  'A fully stocked bar, a pool table and a menu of hearty grills, ribs and generous sharing platters. Relaxed and family-friendly, with the big game on screen and daily specials well worth asking about.',
+  img(G(30), 'Loaded burger at Eden on the Grill', w=1280),
+  (REST, 'View Menu'), rev=True)}
+{feature('Conferences &amp; Events', 'Three venues in Kimberley',
+  'Live music in the Dynamic Hall, weddings and celebrations in the Reception Space, and focused meetings in the Professional Meeting Room, with audio-visual, catering and a dedicated team to look after every detail.',
+  img(E('event-lounge'), 'A launch event in the lounge at Eden', 'sq', w=1280),
+  (CONF, 'Enquire on Availability'))}
+{feature('Kimberley Trampoline Park', 'On the Eden grounds',
+  'Bounce, play and celebrate. Jump sessions, birthday parties and group visits for the whole family, just a few steps from the lodge and the restaurant.',
+  '<div class="logo-panel">' + img('/trampoline-park/assets/logo.png', 'Kimberley Trampoline Park', w=900) + '</div>',
+  (TP, 'Book Jump Session'), rev=True)}
 </div></section>
-
-<section class="pq-hr r"><div class="pq-wrap"><hr></div></section>
-
-<section class="pq-s02 rev"><div class="pq-wrap pq-row">
-<div class="c66">{pq_pic(E('guest-reading-bed'), 'A guest relaxing in bed at Eden Lodge')}</div>
-<div class="c33"><div class="pq-txt" data-fade><h2><a href="{ACC}">Our Rooms</a></h2>
-<p>Superior rooms for two and family rooms for up to four, each with a king-size bed, DSTV, air conditioning, uncapped Wi-Fi and daily housekeeping. A peaceful home-away-from-home, from R750 per room.</p>
-{pq_link(ACC, 'Discover our rooms')}</div></div>
+{band(E('garden-dining-2'), 'Take refuge', 'In our greenery, <em>away from the crowds</em>', 'A sparkling pool, a braai area and quiet gardens to come back to at the end of the day.')}
+<section class="sec find"><div class="wrap find-in">
+<div class="find-txt rv"><h2>Finding Eden</h2><p class="sub">112 Landbou Road, South Ridge, Kimberley</p>
+<p class="prose">Just 5km from Kimberley Airport and 3km from the Diamond Pavilion Mall, Eden is easy to reach and easy to settle into.</p>
+<dl class="lines"><dt>Phone</dt><dd><a href="tel:{TEL}">{TEL_H}</a></dd><dt>WhatsApp</dt><dd><a href="{WA}">{TEL_H}</a></dd><dt>Email</dt><dd><a href="mailto:{MAIL}">{MAIL}</a></dd><dt>Office</dt><dd>Mon – Fri, 9am – 4pm</dd><dt>Restaurant</dt><dd>Wed &amp; Thu 4pm – 9pm &middot; Fri &amp; Sat 12pm – 9pm</dd></dl>
+<a class="btn" href="{MAP}" target="_blank" rel="noopener">Get Directions {ARROW}</a></div>
+<div class="find-map rv d1"><iframe title="Map to Eden Lodge, 112 Landbou Road, Kimberley" src="{MAP_EMBED}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
 </div></section>
-
-<section class="pq-hr"><div class="pq-wrap"><hr></div></section>
-
-<section class="pq-s07"><div class="pq-wrap pq-row">
-<div class="c33"><a href="{ACC}">{pq_pic(E('chalets'), 'The thatched chalets at Eden', 'tall')}</a><h3 class="pq-link"><a href="{ACC}">The Chalets</a></h3></div>
-<div class="c33"><a href="{GAL}#outdoors">{pq_pic(E('garden-dining-3'), 'The garden at Eden', 'tall')}</a><h3 class="pq-link"><a href="{GAL}#outdoors">The Garden</a></h3></div>
-<div class="c33"><a href="{REST}">{pq_pic(E('patio-lights-2'), 'The patio under fairy lights', 'tall')}</a><h3 class="pq-link"><a href="{REST}">The Patio</a></h3></div>
-</div></section>
-
-<section class="pq-hr r"><div class="pq-wrap"><hr></div></section>
-
-<section class="pq-s08"><div class="pq-wrap pq-row">
-<div class="c42" data-fade><p class="pq-sub">Eden Est. 2021</p><p class="pq-h3">A delightful dwelling</p>
-<p class="pq-script">&ldquo;Eden promises a memorable experience for all who visit.&rdquo;</p>
-<p class="pq-sub"><a href="{GAL}">See Eden in pictures</a></p>
-<p><a class="pq-btn" href="{CON}#enquire">Contact Eden</a></p></div>
-<div class="c50"><div class="pq-pair">{pq_pic(E('chalets-pool'), 'Chalets beside the pool', 'one')}<div class="two" data-speed="-0.12">{pq_pic(E('garden-dining'), 'Garden tables in the sun')}</div></div></div>
-</div></section>
-
-<section class="pq-hr r"><div class="pq-wrap"><hr></div></section>
-
-<section class="pq-s18"><div class="pq-wrap pq-row">
-<div class="c33">{pq_pic(E('event-lounge'), 'A launch event in the lounge at Eden', 'sq')}</div>
-<div class="c66"><div class="pq-txt" data-fade><h2><a href="{CONF}">Conferences &amp; Events</a></h2><p class="pq-sub">Three venues in Kimberley</p>
-<p class="pq-h3">Live music in the Dynamic Hall, weddings and celebrations in the Reception Space, and focused meetings in the Professional Meeting Room, with audio-visual, catering and a dedicated team to look after every detail.</p>
-<p><a class="pq-btn" href="{CONF}">Enquire on availability</a></p></div></div>
-</div></section>
-
-<section class="pq-s18 rev"><div class="pq-wrap pq-row">
-<div class="c33"><div class="pq-pic sq logo" data-anim>{img('/trampoline-park/assets/logo.png', 'Kimberley Trampoline Park', w=900)}</div></div>
-<div class="c66"><div class="pq-txt" data-fade><h2><a href="{TP}">Kimberley Trampoline Park</a></h2><p class="pq-sub">On the Eden grounds</p>
-<p class="pq-h3">Bounce, play and celebrate. Jump sessions, birthday parties and group visits for the whole family, just a few steps from the lodge and the restaurant.</p>
-<p><a class="pq-btn" href="{TP}">Book a jump session</a></p></div></div>
-</div></section>
-
-<section class="pq-s18 last"><div class="pq-wrap pq-row">
-<div class="c33"><div class="pq-pic sq map"><iframe title="Map to Eden Lodge, 112 Landbou Road, Kimberley" src="{MAP_EMBED}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div></div>
-<div class="c66"><div class="pq-txt" data-fade><h2><a href="{MAP}" target="_blank" rel="noopener">Finding Eden</a></h2><p class="pq-sub">112 Landbou Road, South Ridge, Kimberley</p>
-<p class="pq-h3">Call or WhatsApp us on <a href="tel:{TEL}">{TEL_H}</a>, or write to <a href="mailto:{MAIL}">{MAIL}</a>. Our office is open Monday to Friday, 9am to 4pm, and Eden on the Grill welcomes you Wednesday to Saturday.</p>
-<p><a class="pq-btn" href="{MAP}" target="_blank" rel="noopener">Get directions</a></p></div></div>
-</div></section>
-
-</div>'''
+{cta('Your stay awaits', 'Contact Eden today', 'Send us your dates and we will confirm availability, rates and anything else you need.', CON + '#enquire', 'Make an enquiry')}'''
     page(HOME, 'Eden Lodge, Restaurant &amp; Conference Centre in Kimberley',
          'Eden is a lodge, restaurant, conference centre and trampoline park in Kimberley offering comfortable accommodation to travellers, families, business people and contractors.',
-         c, G(7), home=True)
+         c, G(7))
 
 def accommodation():
     sup = ['Choice of a luxurious king-size bed, or two &frac34; beds on request', 'Private bathroom', 'Uncapped Wi-Fi',
