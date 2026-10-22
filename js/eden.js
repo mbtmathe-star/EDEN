@@ -47,6 +47,7 @@
       dates.style.display = (v === 'Trampoline Park') ? 'none' : '';
       bf.querySelector('.lbl-in').textContent = v === 'Accommodation' ? 'Check-in' : 'Date';
       bf.querySelector('.lbl-out').parentNode.style.display = v === 'Accommodation' ? '' : 'none';
+      var bn = bf.querySelector('.bk-note'); if (bn) bn.style.display = v === 'Accommodation' ? '' : 'none';
     };
     kind.addEventListener('change', sync); sync();
     var today = new Date().toISOString().slice(0, 10);
@@ -70,6 +71,39 @@
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
     rv.forEach(function (el) { io.observe(el); });
   } else rv.forEach(function (el) { el.classList.add('in'); });
+
+  /* photos open like a curtain as they come into view */
+  var reveals = d.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !reduce) {
+    /* watch the frame, not the clipped photo: a fully clipped element never reports as visible */
+    var rio = new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var r = en.target.querySelector('.reveal'); if (r) r.classList.add('in');
+        rio.unobserve(en.target);
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.05 });
+    reveals.forEach(function (el) { rio.observe(el.parentNode); });
+  } else reveals.forEach(function (el) { el.classList.add('in'); });
+
+  /* photo frames drift slightly slower than the page (reference-style parallax) */
+  var drift = d.querySelectorAll('[data-speed]');
+  if (drift.length && !reduce && window.matchMedia('(min-width: 761px)').matches) {
+    var dTick = false;
+    var move = function () {
+      var vh = window.innerHeight;
+      drift.forEach(function (el) {
+        var r = el.parentNode.getBoundingClientRect();
+        if (r.bottom < -200 || r.top > vh + 200) return;
+        var off = (r.top + r.height / 2 - vh / 2) * parseFloat(el.dataset.speed);
+        el.style.transform = 'translate3d(0,' + off.toFixed(1) + 'px,0)';
+      });
+      dTick = false;
+    };
+    window.addEventListener('scroll', function () { if (!dTick) { dTick = true; requestAnimationFrame(move); } }, { passive: true });
+    window.addEventListener('resize', move);
+    move();
+  }
 
   /* gentle parallax on full-bleed bands */
   var bands = d.querySelectorAll('.band img');

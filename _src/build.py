@@ -138,6 +138,7 @@ def header(path, plain=False):
 <label class="field"><span>I would like to book</span><select name="kind"><option>Accommodation</option><option>Restaurant table</option><option>Conference or event</option><option>Trampoline Park</option></select></label>
 <div class="dates row2"><label class="field"><span class="lbl-in">Check-in</span><input type="date" name="arrive"></label><label class="field"><span class="lbl-out">Check-out</span><input type="date" name="depart"></label></div>
 <label class="field dates"><span>Guests</span><select name="guests"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5 – 10</option><option>10 – 50</option><option>50+</option></select></label>
+<p class="note-box bk-note"><strong>Please note:</strong> children aged 0 – 18 are charged 100% of the sharing rate.</p>
 <button class="btn solid" type="submit">Continue {ARROW}</button>
 </form>
 </div>
@@ -177,28 +178,27 @@ def page(path, title, desc, content, hero_img=None, plain=False):
 
 # ---------- building blocks ----------
 def hero(src, eyebrow, h1, sub='', full=False, cue=True):
+    lines = ''.join(f'<span class="ln"><span>{l}</span></span>' for l in re.split(r'\s+(?=<em>)', h1))
     return f'''<section class="hero{'' if full else ' sub'}">
 {img(src, '', 'hero-img', lazy=False)}
 <div class="hero-c">
-<span class="eyebrow">{eyebrow}</span>
-<h1>{h1}</h1>
-{f'<p>{sub}</p>' if sub else ''}
+<h1>{lines}</h1>
+{f'<p class="hero-sub">{sub}</p>' if sub else ''}
 </div>
-{'<a class="scroll-cue" href="#start" aria-label="Scroll to content">Discover<i></i></a>' if cue else ''}
 </section>'''
 
 def split(pic, eyebrow, title, body, cta=None, rev=False, tag='', wide=False, extra=''):
     btn = f'<a class="btn" href="{cta[0]}">{cta[1]} {ARROW}</a>' if cta else ''
     sub = f'<p class="sub">{eyebrow}</p>' if eyebrow else ''
     return f'''<div class="split{' rev' if rev else ''}">
-<div class="split-img rv">{pic}</div>
+<div class="split-img"><div class="reveal" data-speed="0.05">{pic}</div></div>
 <div class="split-txt rv d1"><h2>{title}</h2>{sub}{body}{extra}{btn}</div>
 </div>'''
 
 def feature(title, sub, text, pics, cta=None, rev=False):
     btn = f'<a class="btn" href="{cta[0]}">{cta[1]} {ARROW}</a>' if cta else ''
     return f'''<div class="feature{' rev' if rev else ''}">
-<div class="feature-pic">{pics}</div>
+<div class="feature-pic"><div class="reveal" data-speed="0.06">{pics}</div></div>
 <div class="feature-txt rv d1"><h2>{title}</h2><p class="sub">{sub}</p><p class="prose">{text}</p>{btn}</div>
 </div>'''
 
@@ -246,7 +246,7 @@ def home():
 </div></section>
 <section class="sec" style="padding-top:0"><div class="wrap">
 {feature('Accommodation', 'The Lodge &middot; from R750 per room',
-  'Superior rooms for two and family rooms for up to four, each with a king-size bed, DSTV, air conditioning, uncapped Wi-Fi and daily housekeeping. A peaceful home-away-from-home for travellers, families and business guests alike.',
+  'Superior rooms for two and family rooms for up to four, each with a king-size bed, DSTV, air conditioning, uncapped Wi-Fi and daily housekeeping. A peaceful home-away-from-home for travellers, families and business guests alike.</p><p class="note-box"><strong>Please note:</strong> children aged 0 – 18 are charged 100% of the sharing rate.',
   img(E('guest-reading-bed'), 'A guest relaxing in bed at Eden Lodge', w=1280),
   (ACC, 'Book Accommodation'))}
 {feature('Eden on the Grill', 'Restaurant &amp; sports bar',
@@ -255,14 +255,14 @@ def home():
   (REST, 'View Menu'), rev=True)}
 {feature('Conferences &amp; Events', 'Three venues in Kimberley',
   'Live music in the Dynamic Hall, weddings and celebrations in the Reception Space, and focused meetings in the Professional Meeting Room, with audio-visual, catering and a dedicated team to look after every detail.',
-  img(G(4), 'Reception tables set for a wedding at Eden', w=1280),
+  img(E('event-lounge'), 'A launch event in the lounge at Eden', 'sq', w=1280),
   (CONF, 'Enquire on Availability'))}
 {feature('Kimberley Trampoline Park', 'On the Eden grounds',
   'Bounce, play and celebrate. Jump sessions, birthday parties and group visits for the whole family, just a few steps from the lodge and the restaurant.',
   '<div class="logo-panel">' + img('/trampoline-park/assets/logo.png', 'Kimberley Trampoline Park', w=900) + '</div>',
   (TP, 'Book Jump Session'), rev=True)}
 </div></section>
-{band(E('garden-night'), 'Take refuge', 'In our greenery, <em>away from the crowds</em>', 'A sparkling pool, a braai area and quiet gardens to come back to at the end of the day.')}
+{band(E('garden-dining-2'), 'Take refuge', 'In our greenery, <em>away from the crowds</em>', 'A sparkling pool, a braai area and quiet gardens to come back to at the end of the day.')}
 <section class="sec find"><div class="wrap find-in">
 <div class="find-txt rv"><h2>Finding Eden</h2><p class="sub">112 Landbou Road, South Ridge, Kimberley</p>
 <p class="prose">Just 5km from Kimberley Airport and 3km from the Diamond Pavilion Mall, Eden is easy to reach and easy to settle into.</p>
@@ -270,7 +270,6 @@ def home():
 <a class="btn" href="{MAP}" target="_blank" rel="noopener">Get Directions {ARROW}</a></div>
 <div class="find-map rv d1"><iframe title="Map to Eden Lodge, 112 Landbou Road, Kimberley" src="{MAP_EMBED}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
 </div></section>
-{marquee([E('lounge-night'), E('room-green-throw'), E('chalets'), 21, E('garden-dining-2'), E('guest-bed-plant'), 22, E('patio-lights'), E('room-tray'), E('play-trampoline-night'), 15, E('entrance-night-2'), E('guest-coffee-bed'), '/uploads/Room1b.jpg'])}
 {cta('Your stay awaits', 'Contact Eden today', 'Send us your dates and we will confirm availability, rates and anything else you need.', CON + '#enquire', 'Make an enquiry')}'''
     page(HOME, 'Eden Lodge, Restaurant &amp; Conference Centre in Kimberley',
          'Eden is a lodge, restaurant, conference centre and trampoline park in Kimberley offering comfortable accommodation to travellers, families, business people and contractors.',
@@ -283,7 +282,7 @@ def accommodation():
     fam = ['A sleeping area with a king-size bed', 'A second area with two &frac34; beds and a corner lounge unit',
            'En-suite bathroom', 'Uncapped Wi-Fi', 'TV with DSTV', 'Air conditioning and ceiling fan',
            'Non-smoking, with a sitting area and desk', 'Bar fridge, coffee and tea facilities', 'Daily cleaning service']
-    note = '<p style="font-size:14.5px;color:var(--muted)">Children aged 0 – 18 are charged 100% of the sharing rate.</p>'
+    note = '<p class="note-box"><strong>Please note:</strong> children aged 0 – 18 are charged 100% of the sharing rate.</p>'
     price = '<p class="price"><small>Starting from</small>R750 per room</p>'
     c = f'''{hero(E('guest-reading-tray'), 'Accommodation in Kimberley', 'Your home <em>away from home</em>', 'An exceptional retreat for travellers, families and business professionals alike.')}
 <section class="sec intro center" id="start"><div class="narrow rv">
@@ -313,16 +312,14 @@ def restaurant():
 <p class="lead">Eden on the Grill is the perfect spot for a night out with friends or family. Catch up with friends, watch a game, or simply enjoy some good food, with a fully stocked bar and a pool table for any occasion.</p>
 </div></section>
 <section class="sec" style="padding-top:0" id="menu"><div class="wrap">
-{feature('Hearty grills &amp; platters', 'Our menu &middot; daily specials',
-  'Ribs, wings, burgers and generous sharing platters, made to be enjoyed together. Be sure to ask about the daily specials. For the full menu, message us on WhatsApp and we will send it straight to you.',
-  img(G(9), 'Eden on the Grill sharing platter', w=1280),
-  (WA, 'Request the Menu'))}
-{feature('Stay a little longer', 'Sports bar &middot; pool table &middot; lounge',
-  'A fully stocked bar, the big game on screen and deep sofas to sink into with friends. Relaxed, family-friendly and welcoming every evening we are open.',
-  img(E('lounge-night'), 'The bar at Eden on the Grill at night', w=1280),
-  (CON + '?kind=Restaurant%20table#enquire', 'Book a Table'), rev=True)}
+<div class="dine">
+<div class="dine-pic"><div class="reveal" data-speed="0.08">{img(G(21), 'Sharing platter at Eden on the Grill', w=1280)}</div></div>
+<div class="dine-txt rv"><h2>Hearty grills &amp; platters</h2><p class="sub">Our menu &middot; daily specials</p>
+<p>Ribs, wings, burgers and generous sharing platters, made to be enjoyed together, with a fully stocked bar, a pool table and the big game on screen. Be sure to ask about the daily specials.</p>
+<a class="btn" href="{CON}?kind=Restaurant%20table#enquire">Reserve a Table {ARROW}</a></div>
+<div class="dine-pic"><div class="reveal" data-speed="0.12">{img(E('lounge-night'), 'The bar and lounge at Eden on the Grill', w=1280)}</div></div>
+</div>
 </div></section>
-<section class="sec" style="padding-top:0"><div class="wrap"><div class="dishes">{''.join(f'<a href="{G(n)}" data-lb="food" class="rv">' + img(G(n), 'Dish at Eden on the Grill', w=900) + '</a>' for n in (30, 21, 15))}</div></div></section>
 {band(E('patio-lights'), 'Outdoors', 'Dinner under <em>Kimberley skies</em>')}
 <section class="sec"><div class="wrap"><div class="info">
 <div class="rv"><h3>Restaurant hours</h3>{hours_dl()}</div>
@@ -351,7 +348,7 @@ def conferences():
 {venue(2, 'The Elegant Reception Space', 'Weddings &middot; celebrations', 'Perfect for weddings, family celebrations or business gatherings, Room 2 provides a sophisticated setting with expansive interiors and modern audio and video systems. From custom décor to tailored catering, every detail is designed to create a warm and memorable atmosphere.', ['/uploads/Room2a.jpg', '/uploads/Room2b.jpg', G(4)], rev=True)}
 {venue(3, 'The Professional Meeting Room', 'Meetings &middot; workshops', 'Designed with productivity in mind, Room 3 is the space for business meetings, presentations and workshops. Its modern design and technology ensure a distraction-free environment, with our technical team on hand for anything you need.', ['/uploads/Room3a.jpg', G(28)])}
 </div></section>
-{band(E('event-lounge'), 'Style &amp; service', 'The perfect blend of <em>style and function</em>')}
+{band(E('lounge-night-2'), 'Style &amp; service', 'The perfect blend of <em>style and function</em>')}
 <section class="sec"><div class="wrap">
 <div class="sec-head center rv"><span class="eyebrow">Included</span><h2 class="h3">Everything for a seamless event</h2></div>
 <div class="feats">

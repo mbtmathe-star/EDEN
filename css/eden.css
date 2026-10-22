@@ -319,7 +319,7 @@ strong{font-weight:500;color:var(--ink)}
 .gal-group .count{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:20px}
 
 /* ---- editorial blocks (reference: title, small-caps subtitle, serif prose, outline button) ---- */
-.sub{font-family:var(--sans);font-size:12.5px;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);margin:14px 0 26px}
+p.sub{font-family:var(--sans);font-size:12.5px;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);margin:14px 0 26px}
 .prose{}
 .split-txt h2{margin-bottom:0}
 .quote{font-family:var(--serif);font-style:italic;font-size:22px;color:var(--green);margin-top:30px}
@@ -362,3 +362,50 @@ strong{font-weight:500;color:var(--ink)}
 .dishes a{flex:1 1 0;display:block}
 .dishes img{width:100%;height:auto;display:block}
 @media (max-width:760px){.dishes{flex-direction:column}}
+
+/* ---- hero: text bottom-left (reference layout) ---- */
+.hero{place-items:end start;text-align:left}
+.hero::after{background:linear-gradient(180deg,rgba(10,20,10,.45) 0%,rgba(10,20,10,0) 30%,rgba(10,20,10,.15) 55%,rgba(10,20,10,.62) 100%)}
+.hero-c{max-width:none;width:100%;padding:0 var(--gutter) clamp(44px,7vh,90px)}
+.hero h1{font-size:clamp(48px,7.4vw,112px);line-height:1.02;max-width:14ch}
+.hero h1 .ln{display:block;overflow:hidden;padding-bottom:.08em}
+.hero h1 .ln>span{display:block;transform:translateY(105%);animation:lineUp 1.3s var(--ease) forwards}
+.hero h1 .ln:nth-child(2)>span{animation-delay:.14s}
+.hero .hero-sub{font-family:var(--serif);font-style:italic;font-size:clamp(19px,1.8vw,26px);line-height:1.4;max-width:640px;margin:18px 0 0;color:rgba(255,255,255,.92);opacity:0;animation:fadeIn 1.2s .55s var(--ease) forwards}
+@keyframes lineUp{to{transform:none}}
+@keyframes fadeIn{to{opacity:1}}
+
+/* ---- photo reveal: opens like a curtain, photo stays whole ---- */
+.reveal{position:relative;overflow:hidden;clip-path:inset(0 0 100% 0);transition:clip-path 1.5s cubic-bezier(.77,0,.18,1);will-change:transform}
+.reveal img{transform:scale(1.12);transition:transform 2.2s cubic-bezier(.22,.61,.36,1)}
+.reveal.in{clip-path:inset(0 0 0 0)}
+.reveal.in img{transform:none}
+.no-js .reveal{clip-path:none}.no-js .reveal img{transform:none}
+
+/* square photo where asked */
+img.sq{aspect-ratio:1/1;object-fit:cover;width:100%}
+
+/* please-note box */
+.note-box{border-left:2px solid var(--yellow);background:var(--mint);padding:12px 16px;font-size:15px;color:var(--ink);margin:18px 0 0}
+.note-box strong{font-weight:500}
+.prose+.note-box{margin-top:18px}
+.bk-note{margin:0 0 22px}
+
+/* restaurant: food | words | venue */
+.dine{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr) minmax(0,1fr);gap:clamp(28px,4vw,64px);align-items:center}
+.dine-pic img{width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;display:block}
+.dine-pic:last-child{margin-top:clamp(40px,8vw,120px)}
+.dine-pic:first-child{margin-bottom:clamp(40px,8vw,120px)}
+.dine-txt{text-align:center}
+.dine-txt h2{font-size:clamp(34px,3.4vw,50px)}
+.dine-txt .btn{margin-top:26px}
+
+@media (prefers-reduced-motion:reduce){
+  .hero h1 .ln>span,.hero .hero-sub{animation:none;transform:none;opacity:1}
+  .reveal{clip-path:none;transition:none}.reveal img{transform:none;transition:none}
+}
+@media (max-width:760px){
+  .dine{grid-template-columns:1fr}
+  .dine-pic:last-child,.dine-pic:first-child{margin:0}
+  .dine-pic img{aspect-ratio:4/3}
+}
