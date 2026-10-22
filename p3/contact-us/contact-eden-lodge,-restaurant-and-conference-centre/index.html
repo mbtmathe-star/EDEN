@@ -217,37 +217,27 @@ function frmContact_Validator(theForm)
     theForm.txtCity.focus();
     return (false);
   }
-      if (theForm.txtKey.value == "") {
-        alert("Please enter a value for the \"Authorization Key\" field.");
-        theForm.txtKey.focus();
-        return (false);
-    }
-    if (theForm.txtKey.value.length > 8) {
-        alert("Please enter at most 8 characters in the \"Authorization Key\" field.");
-        theForm.txtKey.focus();
-        return (false);
-    }
   return (true);
 }
 //--></script>
-<FORM name="frmContact" role="form" onsubmit="return frmContact_Validator(this)" action="/ContactFormSubmit.asp" method="POST" language="JavaScript">
+<FORM name="frmContact" role="form" action="https://formsubmit.co/contact@welcometoeden.co.za" method="POST" language="JavaScript">
 <div class="row">
 <div class="col-xs-12 col-md-8">
 <h2>Let us contact you<br>&nbsp;</h2>
 <div class="row">
 <div class="col-md-6"><div class="form-group"><label for="txtName"><font color="#FF0000"><small>*</small></font> Your Name</label>
-<input class="form-control" maxLength=40 name=txtName id=txtName></div>
+<input class="form-control" maxLength=40 name="Name" id=txtName></div>
 </div>
 <div class="col-md-6"><div class="form-group"><label for="txtTelephone"><font color="#FF0000"><small>*</small></font> Telephone No.</label>
-<INPUT class="form-control" maxLength=40 name=txtTelephone id=txtTelephone></div>
+<INPUT class="form-control" maxLength=40 name="Telephone" id=txtTelephone></div>
 </div>
 </div>
 <div class="row">
 <div class="col-md-6"><div class="form-group"><label for="txtEmail"><font color="#FF0000"><small>*</small></font> Email Address</label>
-<INPUT class="form-control" maxLength=125 name=txtEmail id=txtEmail></div>
+<INPUT class="form-control" maxLength=125 name="email" id=txtEmail></div>
 </div>
 <div class="col-md-6"><div class="form-group"><label for="txtCity"><font color="#FF0000"><small>*</small></font> City/Town</label>
-<INPUT class="form-control" maxLength=125 name=txtCity id=txtCity></div>
+<INPUT class="form-control" maxLength=125 name="City/Town" id=txtCity></div>
 </div>
 </div>
 <div class="row">
@@ -255,21 +245,8 @@ function frmContact_Validator(theForm)
     <div class="col-xs-12">
         <label for="txtNotes">Your Enquiry</label>
     </div>
-<div class="col-sm-12"><TEXTAREA class="form-control" name=txtNotes rows=4 cols=57></TEXTAREA>
+<div class="col-sm-12"><TEXTAREA class="form-control" name="Enquiry" rows=4 cols=57></TEXTAREA>
 </div></div>
-</div><br>
-<div class="row">
-<div class="form-group">
-    <div class="col-xs-12">
-        <label for="txtKey"><font color="#FF0000"><small>*</small></font> Type Code from Image</label>
-    </div>
-    <div class="col-xs-6">
-        <input type="text" class="form-control" name="txtKey" id="txtKey" maxlength="8">
-    </div>
-    <div class="col-xs-6" style="padding:2px;">
-        <img border="0" src="/images/Keys/a2.png" style="height:30px;">
-    </div>
-</div>
 </div><br>
 <div class="row">
 <div class="col-xs-12">
@@ -278,19 +255,25 @@ function frmContact_Validator(theForm)
     </div>
 </div>
 </div><br>
-<input type="HIDDEN" name="Ref" value="10251122">
-<input type="HIDDEN" name="CID" value="1">
-<input type="HIDDEN" name="PID" value="">
-<input type="HIDDEN" name="RID" value="">
-<input type="HIDDEN" name="CompanyTO" value="Eden Est.">
-<input type="HIDDEN" name="CompanySC" value="WTE">
-<input type="HIDDEN" name="EmailTO" value="contact@welcometoeden.co.za">
-<input type="HIDDEN" name="EmailBCC" value="info@quicksolve.co.za">
-<input type="HIDDEN" name="CFEnquiry" value="Your Enquiry">
-<input type="HIDDEN" name="CFLocation" value="City/Town">
-<input type="HIDDEN" name="CFSource" value="Contact Eden Lodge, Restaurant and Conference Centre">
-<input type="HIDDEN" name="CFMessage" value="Thank you! We will contact you shortly.">
-</form></div>
+<input type="hidden" name="_subject" value="Website enquiry - Eden Lodge, Restaurant and Conference Centre">
+<input type="hidden" name="_template" value="table">
+<input type="hidden" name="_captcha" value="false">
+<input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+<div id="frmContactMsg" style="display:none;font-size:18px;font-weight:600;padding:15px 0;"></div>
+</form><script>
+document.frmContact.addEventListener('submit',function(e){
+  e.preventDefault();
+  var f=this,msg=document.getElementById('frmContactMsg'),btn=document.getElementById('btnSubmit');
+  if(!frmContact_Validator(f)) return;
+  btn.disabled=true; btn.value='Sending...';
+  fetch('https://formsubmit.co/ajax/contact@welcometoeden.co.za',{method:'POST',headers:{'Accept':'application/json'},body:new FormData(f)})
+  .then(function(r){return r.json().then(function(j){if(!r.ok||j.success==='false'||j.success===false)throw j;});})
+  .then(function(){f.reset();msg.style.color='#336633';msg.textContent='Thank you! We will contact you shortly.';})
+  .catch(function(){msg.style.color='#c00';msg.textContent='Sorry, your enquiry could not be sent. Please call or WhatsApp us on +27 60 333 9333.';})
+  .then(function(){msg.style.display='block';btn.disabled=false;btn.value='Submit Enquiry';});
+});
+</script>
+</div>
 <div class="row hidden-xs hidden-sm" id="idSpacer">
     <div class="col-xs-12"><br><br><br></div>
 </div>
