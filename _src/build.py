@@ -1,0 +1,401 @@
+"""Builds the Eden static site from one shared layout.
+
+Run from the repo root:  python _src/build.py
+Writes the HTML pages in place (same URLs as the original welcometoeden.co.za site)
+and web-sized photos into img/g/. Content lives in this file; styles in css/eden.css,
+behaviour in js/eden.js.
+"""
+import os, re, html
+from PIL import Image
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+os.chdir(ROOT)
+
+HOME = '/'
+ACC = '/p11/accommodation/accommodation-in-kimberley/'
+REST = '/p12/restaurant/eden-on-the-grill-restaurant/'
+CONF = '/p13/conferences/conference-and-function-venues-in-kimberley/'
+GAL = '/gallery/'
+CON = '/p3/contact-us/contact-eden-lodge,-restaurant-and-conference-centre/'
+TP = '/trampoline-park/'
+PRIV = '/p4/privacy-policy.html'
+COOK = '/p4/cookie-policy.html'
+SITE = 'https://welcometoeden.co.za'
+
+TEL, TEL_H = '+27603339333', '+27 60 333 9333'
+WA = 'https://api.whatsapp.com/send?phone=27603339333'
+MAIL = 'contact@welcometoeden.co.za'
+MAP = 'https://maps.app.goo.gl/M81UKrrQJyFEoRz4A'
+ADDR = '112 Landbou Rd, South Ridge, Kimberley, 8301'
+MAP_EMBED = ('https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d749.451900015318!2d24.74805929440422'
+             '!3d-28.778385580580963!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e9b1a26696c7e1d'
+             '%3A0x50a8fcd6786b1cc!2sEden%20Restaurant%20%26%20Lodge!5e0!3m2!1sen!2sza!4v1740660885265!5m2!1sen!2sza')
+
+
+# ---------- images ----------
+def G(n):
+    return f'/uploads/EdenLodgeRestaurantGallery-{n:02d}.jpg'
+
+def web(src, w=900):
+    """Web-sized copy of an /uploads photo (keeps aspect). Returns its URL."""
+    name, ext = os.path.splitext(os.path.basename(src))
+    png = ext.lower() == '.png'
+    out = f'img/g/{name}-{w}.{"png" if png else "jpg"}'
+    if not os.path.exists(out):
+        os.makedirs('img/g', exist_ok=True)
+        im = Image.open(src.lstrip('/'))
+        im = im.convert('RGBA' if png else 'RGB')
+        if png and im.getbbox():
+            im = im.crop(im.getchannel('A').getbbox())
+        if im.width > w:
+            im = im.resize((w, round(im.height * w / im.width)), Image.LANCZOS)
+        if png:
+            im.save(out, optimize=True)
+        else:
+            im.save(out, quality=80, optimize=True, progressive=True)
+    return '/' + out
+
+def size(src):
+    im = Image.open(src.lstrip('/'))
+    return im.width, im.height
+
+def img(src, alt, cls='', w=None, lazy=True):
+    s = web(src, w) if w else src
+    iw, ih = size(s)
+    return (f'<img src="{s}" alt="{html.escape(alt)}" width="{iw}" height="{ih}"'
+            f'{" class=%s" % chr(34) + cls + chr(34) if cls else ""}{" loading=lazy decoding=async" if lazy else ""}>')
+
+
+# ---------- shared layout ----------
+NAV_STAY = [(ACC, 'Accommodation'), (REST, 'Restaurant'), (CONF, 'Conferences &amp; Events'), (TP, 'Trampoline Park')]
+NAV_EDEN = [(HOME, 'Home'), (GAL, 'Photo Gallery'), (CON, 'Contact Us')]
+
+ARROW = '<span class="arr" aria-hidden="true"></span>'
+
+def head(title, desc, path, hero_img=None):
+    pre = f'<link rel="preload" as="image" href="{hero_img}">' if hero_img else ''
+    return f'''<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{title}</title>
+<meta name="description" content="{html.escape(desc)}">
+<link rel="canonical" href="{SITE}{path}">
+<meta property="og:title" content="{title}">
+<meta property="og:description" content="{html.escape(desc)}">
+<meta property="og:image" content="{SITE}{hero_img or G(7)}">
+<meta name="theme-color" content="#336633">
+<link rel="icon" href="/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&family=Pinyon+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/eden.css">
+{pre}
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WWD577N0KL"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-WWD577N0KL');gtag('config','AW-16936927334');</script>
+</head>'''
+
+def header(path, plain=False):
+    cur = lambda u: ' aria-current="page"' if u == path else ''
+    stay = ''.join(f'<a href="{u}"{cur(u)}>{t}</a>' for u, t in NAV_STAY)
+    eden = ''.join(f'<a href="{u}"{cur(u)}>{t}</a>' for u, t in NAV_EDEN)
+    return f'''<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="hdr{' plain' if plain else ''}">
+<div class="hdr-in">
+<button class="menu-btn" type="button" data-open="menu" aria-controls="menu"><span class="burger" aria-hidden="true"></span><span class="t">Menu</span></button>
+<a class="logo" href="/" aria-label="Eden home"><img class="lt" src="/img/logo-light.png" alt="Eden — a delightful dwelling" width="360" height="119"><img class="dk" src="/img/logo-dark.png" alt="" width="360" height="119"></a>
+<div class="hdr-r"><a class="hdr-tel" href="tel:{TEL}">{TEL_H}</a><a class="btn" href="{CON}#enquire" data-open="book">Book now</a></div>
+</div>
+</header>
+<div class="menu" id="menu" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Site menu">
+<div class="menu-top"><img src="/img/logo-green.png" alt="Eden" width="360" height="119"><button class="menu-close" type="button" data-close>Close <i aria-hidden="true"></i></button></div>
+<nav class="menu-body" aria-label="Main">
+<div class="menu-col"><h4>Stay, dine &amp; play</h4>{stay}</div>
+<div class="menu-col"><h4>Eden</h4>{eden}</div>
+</nav>
+<div class="menu-foot"><a href="tel:{TEL}">{TEL_H}</a><a href="{WA}">WhatsApp</a><a href="mailto:{MAIL}">{MAIL}</a><a href="{MAP}" target="_blank" rel="noopener">{ADDR}</a></div>
+</div>
+<div class="book" id="book" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Booking enquiry">
+<div class="book-bg" data-close></div>
+<div class="book-panel">
+<button class="menu-close" type="button" data-close>Close <i aria-hidden="true"></i></button>
+<span class="eyebrow">Booking enquiry</span>
+<h2>Plan your visit</h2>
+<p class="note">Tell us what you have in mind and we will confirm availability with you directly.</p>
+<form id="bookForm" action="{CON}">
+<label class="field"><span>I would like to book</span><select name="kind"><option>Accommodation</option><option>Restaurant table</option><option>Conference or event</option><option>Trampoline Park</option></select></label>
+<div class="dates row2"><label class="field"><span class="lbl-in">Check-in</span><input type="date" name="arrive"></label><label class="field"><span class="lbl-out">Check-out</span><input type="date" name="depart"></label></div>
+<label class="field dates"><span>Guests</span><select name="guests"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5 – 10</option><option>10 – 50</option><option>50+</option></select></label>
+<button class="btn solid" type="submit">Continue {ARROW}</button>
+</form>
+</div>
+</div>
+<main id="main">'''
+
+def footer():
+    stay = ''.join(f'<li><a href="{u}">{t}</a></li>' for u, t in NAV_STAY)
+    eden = ''.join(f'<li><a href="{u}">{t}</a></li>' for u, t in NAV_EDEN)
+    return f'''</main>
+<footer class="ftr">
+<div class="wrap">
+<div class="ftr-top">
+<div><img src="/img/logo-light.png" alt="Eden — a delightful dwelling" width="360" height="119" loading="lazy"><p>Lodge, restaurant, conference centre and trampoline park in Kimberley.</p></div>
+<div><h4>Discover</h4><ul>{stay}</ul></div>
+<div><h4>Eden</h4><ul>{eden}</ul></div>
+<div><h4>Visit</h4><ul><li><a href="tel:{TEL}">{TEL_H}</a></li><li><a href="{WA}">WhatsApp {TEL_H}</a></li><li><a href="mailto:{MAIL}">{MAIL}</a></li><li><a href="{MAP}" target="_blank" rel="noopener">{ADDR}, South Africa</a></li></ul></div>
+</div>
+<div class="ftr-bot"><span>&copy; <span id="yr">2026</span> Eden Est. All rights reserved.</span><nav aria-label="Legal"><a href="{PRIV}">Privacy Policy</a><a href="{COOK}">Cookie Policy</a></nav></div>
+</div>
+</footer>
+<script src="/js/eden.js" defer></script>
+</body>
+</html>
+'''
+
+def page(path, title, desc, content, hero_img=None, plain=False):
+    out = path.lstrip('/')
+    if out == '' or out.endswith('/'):
+        out += 'index.html'
+    os.makedirs(os.path.dirname(out) or '.', exist_ok=True)
+    doc = head(title, desc, path, hero_img) + '\n' + header(path, plain) + '\n' + content + '\n' + footer()
+    open(out, 'w', encoding='utf8', newline='\n').write(doc)
+    print('wrote', out)
+
+
+# ---------- building blocks ----------
+def hero(src, eyebrow, h1, sub='', full=False, cue=True):
+    return f'''<section class="hero{'' if full else ' sub'}">
+{img(src, '', 'hero-img', lazy=False)}
+<div class="hero-c">
+<span class="eyebrow">{eyebrow}</span>
+<h1>{h1}</h1>
+{f'<p>{sub}</p>' if sub else ''}
+</div>
+{'<a class="scroll-cue" href="#start" aria-label="Scroll to content">Discover<i></i></a>' if cue else ''}
+</section>'''
+
+def split(pic, eyebrow, title, body, cta=None, rev=False, tag='', wide=False, extra=''):
+    btn = f'<a class="btn" href="{cta[0]}">{cta[1]} {ARROW}</a>' if cta else ''
+    t = f'<span class="tag">{tag}</span>' if tag else ''
+    return f'''<div class="split{' rev' if rev else ''}">
+<div class="split-img{' wide' if wide else ''} rv">{pic}{t}</div>
+<div class="split-txt rv d1"><span class="eyebrow">{eyebrow}</span><h2>{title}</h2><span class="rule"></span>{body}{extra}{btn}</div>
+</div>'''
+
+def band(src, script, h2, sub=''):
+    return f'''<section class="band">
+{img(src, '', w=None)}
+<div class="band-c rv"><span class="script">{script}</span><h2>{h2}</h2>{f'<p style="margin-top:20px">{sub}</p>' if sub else ''}</div>
+</section>'''
+
+def cta(script, h2, text, href, label):
+    return f'''<section class="sec cta"><div class="narrow rv">
+<span class="script">{script}</span><h2>{h2}</h2><span class="rule c"></span><p>{text}</p>
+<a class="btn light" href="{href}">{label} {ARROW}</a>
+</div></section>'''
+
+def ticks(items, cols=False):
+    return f'<ul class="ticks{" cols" if cols else ""}">' + ''.join(f'<li>{i}</li>' for i in items) + '</ul>'
+
+def hours_dl():
+    return ('<dl><dt>Wed &amp; Thu</dt><dd>4pm – 9pm</dd><dt>Fri &amp; Sat</dt><dd>12pm – 9pm</dd>'
+            '<dt>Sun – Tue</dt><dd>Closed</dd></dl>')
+
+def strip(ids, sid, group):
+    items = ''.join(f'<a href="{G(n)}" data-lb="{group}">{img(G(n), "Eden Lodge, Restaurant and Conference Centre", w=900)}</a>' for n in ids)
+    return f'<div class="strip" id="{sid}">{items}</div>'
+
+
+# ---------- pages ----------
+FAC = ['Secure, free parking', 'Braai facilities and a BBQ / picnic area', 'A welcoming bar and lounge',
+       'On-site laundry service', 'A refreshing outdoor pool', 'Eden on the Grill restaurant',
+       'Wi-Fi throughout the property', 'Kimberley Trampoline Park on site']
+
+def home():
+    feats = [('Stay', 'Superior &amp; family rooms', 'King-size beds, DSTV, air conditioning, uncapped Wi-Fi and daily cleaning, from R750 per room.'),
+             ('Dine', 'Eden on the Grill', 'A fully stocked bar, pool table and hearty grills in a relaxed, family-friendly sports bar.'),
+             ('Gather', 'Three event venues', 'From live music to weddings to boardroom meetings, with audio-visual and catering.'),
+             ('Unwind', 'Pool &amp; gardens', 'Take refuge in our greenery, away from the crowds, with a pool and braai area.'),
+             ('Play', 'Trampoline park', 'Jump sessions, birthday parties and group bookings for the whole family.'),
+             ('Arrive', 'Easy to reach', 'Just 5km from Kimberley Airport and 3km from the Diamond Pavilion Mall.')]
+    fhtml = ''.join(f'<div class="feat rv{" d1" if i % 3 == 1 else " d2" if i % 3 == 2 else ""}"><span class="num">{a}</span><h3>{b}</h3><p>{c}</p></div>' for i, (a, b, c) in enumerate(feats))
+    c = f'''{hero(G(7), 'Kimberley &middot; Northern Cape', 'A delightful <em>dwelling</em>', 'Lodge, restaurant, conference centre and trampoline park, where comfort and luxury meet exceptional service.', full=True)}
+<section class="sec intro center" id="start"><div class="narrow rv">
+<span class="script">Welcome to Eden</span>
+<p class="lead">Our lodge offers a relaxing stay with stylish accommodation for those seeking a peaceful retreat. Whether you are travelling for business or leisure, Eden is the perfect place to unwind, connect and enjoy.</p>
+<p class="sig">Eden promises a memorable experience for all who visit.</p>
+</div></section>
+<section class="sec" style="padding-top:0"><div class="wrap">
+{split(img(G(5), 'Superior room at Eden Lodge', w=1280), 'Stay', 'Accommodation', '<p>Eden Lodge offers comfort, style and convenience for families, travellers and business professionals. Whether unwinding, attending meetings or exploring attractions, enjoy peaceful rooms, thoughtful amenities and warm hospitality.</p><p class="price"><small>Starting from</small>R750 per room</p>', (ACC, 'Book Accommodation'), tag='The Lodge')}
+{split(img(G(23), 'The bar at Eden on the Grill', w=1280), 'Dine', 'Eden on the Grill', '<p>A fun, relaxed night out with friends or family. Enjoy a fully stocked bar, a pool table and a menu full of mouthwatering dishes. With its lively sports bar atmosphere and warm, welcoming vibe, it is the perfect spot for any occasion.</p>', (REST, 'View Menu'), rev=True, tag='Restaurant &amp; bar')}
+{split(img('/uploads/Room1b.jpg', 'Conference hall set up for an event', w=1280), 'Gather', 'Conferences &amp; Events', '<p>Corporate conferences, wedding receptions, live music and private celebrations. Three versatile venues with modern audio-visual technology, catering and attentive service, so every event is a success.</p>', (CONF, 'Enquire on Availability'), tag='Three venues')}
+{split('<div class="logo-panel">' + img('/trampoline-park/assets/logo.png', 'Kimberley Trampoline Park', w=900) + '</div>', 'Play', 'Trampoline Park', '<p>Fun for the whole family, right here on the Eden grounds. Book jump sessions, birthday parties and group visits at Kimberley Trampoline Park.</p>', (TP, 'Book Jump Session'), rev=True)}
+</div></section>
+{band(G(6), 'Take refuge', 'In our greenery, <em>away from the crowds</em>')}
+<section class="sec"><div class="wrap">
+<div class="sec-head center rv"><span class="eyebrow">Everything in one place</span><h2 class="h2">Life at Eden</h2></div>
+<div class="feats">{fhtml}</div>
+</div></section>
+<section class="sec mint" style="padding-bottom:clamp(60px,8vw,110px)">
+<div class="wrap head-row sec-head rv" style="margin-bottom:40px"><div><span class="eyebrow">Gallery</span><h2 class="h2">Moments at Eden</h2></div>
+<div style="display:flex;gap:26px;align-items:center"><a class="link" href="{GAL}">View all photos</a><div class="strip-nav" data-strip="homeStrip"><button type="button" data-dir="prev" aria-label="Previous photos">&#8592;</button><button type="button" data-dir="next" aria-label="Next photos">&#8594;</button></div></div></div>
+{strip([22, 2, 21, 16, 13, 29, 3, 27, 30, 41], 'homeStrip', 'home')}
+</section>
+<section class="sec"><div class="wrap">
+<div class="info">
+<div class="rv"><span class="eyebrow">Find us</span><h3>112 Landbou Road</h3><p>South Ridge, Kimberley, 8301<br>South Africa</p><a class="link" href="{MAP}" target="_blank" rel="noopener">Get directions</a></div>
+<div class="rv d1"><span class="eyebrow">Talk to us</span><h3>We are here to help</h3><dl><dt>Phone</dt><dd><a href="tel:{TEL}">{TEL_H}</a></dd><dt>WhatsApp</dt><dd><a href="{WA}">{TEL_H}</a></dd><dt>Email</dt><dd><a href="mailto:{MAIL}">{MAIL}</a></dd><dt>Office</dt><dd>Mon – Fri, 9am – 4pm</dd></dl></div>
+<div class="rv d2"><span class="eyebrow">Restaurant hours</span><h3>Eden on the Grill</h3>{hours_dl()}</div>
+</div>
+</div></section>
+{cta('Your stay awaits', 'Contact Eden today', 'Send us your dates and we will confirm availability, rates and anything else you need.', CON + '#enquire', 'Make an enquiry')}'''
+    page(HOME, 'Eden Lodge, Restaurant &amp; Conference Centre in Kimberley',
+         'Eden is a lodge, restaurant, conference centre and trampoline park in Kimberley offering comfortable accommodation to travellers, families, business people and contractors.',
+         c, G(7))
+
+def accommodation():
+    sup = ['Choice of a luxurious king-size bed, or two &frac34; beds on request', 'Private bathroom', 'Uncapped Wi-Fi',
+           'TV with DSTV', 'Air conditioning and ceiling fan', 'Comfortable sitting area and desk',
+           'Bar fridge, coffee and tea facilities', 'Daily cleaning service']
+    fam = ['A sleeping area with a king-size bed', 'A second area with two &frac34; beds and a corner lounge unit',
+           'En-suite bathroom', 'Uncapped Wi-Fi', 'TV with DSTV', 'Air conditioning and ceiling fan',
+           'Non-smoking, with a sitting area and desk', 'Bar fridge, coffee and tea facilities', 'Daily cleaning service']
+    note = '<p style="font-size:14.5px;color:var(--muted)">Children aged 0 – 18 are charged 100% of the sharing rate.</p>'
+    price = '<p class="price"><small>Starting from</small>R750 per room</p>'
+    c = f'''{hero(G(19), 'Accommodation in Kimberley', 'Your home <em>away from home</em>', 'An exceptional retreat for travellers, families and business professionals alike.')}
+<section class="sec intro center" id="start"><div class="narrow rv">
+<span class="script">Rest well</span>
+<p class="lead">Our rooms are designed with your comfort in mind, with modern amenities for a truly relaxing, stress-free stay. Whether you are planning a short getaway or an extended stay, Eden Lodge is the perfect home-away-from-home.</p>
+</div></section>
+<section class="sec" style="padding-top:0"><div class="wrap">
+{split(img(G(5), 'Superior room with king-size bed', w=1280), 'Up to 2 adults', 'Superior Rooms', '<p>Thoughtfully appointed to provide a peaceful escape. Each room includes:</p>' + ticks(sup) + price + note, (CON + '?kind=Accommodation#enquire', 'Book a Superior Room'), tag='Superior')}
+{split(img(G(31), 'Family room at Eden Lodge', w=1280), 'Up to 4 adults', 'Family Rooms', '<p>Versatile living spaces for families and larger groups. Each family room features:</p>' + ticks(fam) + price + note, (CON + '?kind=Accommodation#enquire', 'Book a Family Room'), rev=True, tag='Family')}
+</div></section>
+{band(G(22), 'Unwind', 'A pool, a braai and <em>space to breathe</em>')}
+<section class="sec"><div class="wrap">
+<div class="split"><div class="split-txt rv"><span class="eyebrow">General facilities</span><h2>Everything you need</h2><span class="rule"></span><p>Guests at Eden Lodge enjoy access to a host of on-site facilities designed to make your stay easy:</p>{ticks(FAC, cols=True)}<p>Every detail is crafted to provide a refined and welcoming atmosphere, whether you are travelling alone, with family or on business.</p></div>
+<div class="split-img wide rv d1">{img(G(16), 'Garden and outdoor seating at Eden', w=1280)}</div></div>
+</div></section>
+<section class="sec mint tight"><div class="wrap">
+<div class="head-row sec-head rv" style="margin-bottom:34px"><div><span class="eyebrow">The rooms</span><h2 class="h3">A closer look</h2></div><div class="strip-nav" data-strip="roomStrip"><button type="button" data-dir="prev" aria-label="Previous photos">&#8592;</button><button type="button" data-dir="next" aria-label="Next photos">&#8594;</button></div></div>
+</div>{strip([13, 19, 31, 14, 20, 38, 39, 18, 32], 'roomStrip', 'rooms')}</section>
+{cta('Book your stay', 'Reserve a room', 'Contact us to find out more about our accommodation or to make a booking.', CON + '?kind=Accommodation#enquire', 'Book Accommodation')}'''
+    page(ACC, 'Accommodation in Kimberley | Eden Lodge',
+         'Superior and family rooms at Eden Lodge in Kimberley from R750 per room: king-size beds, DSTV, air conditioning, uncapped Wi-Fi, pool and secure parking.', c, G(19))
+
+def restaurant():
+    pillars = [('Diverse offerings', 'We accommodate everything.'), ('A cozy place', 'Feel at home and find your atmosphere.'),
+               ('Relaxed atmosphere', 'Take refuge in our greenery and away from the crowds.')]
+    phtml = ''.join(f'<div class="feat rv{" d1" if i == 1 else " d2" if i == 2 else ""}"><span class="num">0{i+1}</span><h3>{a}</h3><p>{b}</p></div>' for i, (a, b) in enumerate(pillars))
+    c = f'''{hero(G(2), 'Eden on the Grill', 'Good food, <em>good company</em>', 'A family-friendly restaurant and sports bar in the heart of Eden.')}
+<section class="sec intro center" id="start"><div class="narrow rv">
+<span class="script">Pull up a chair</span>
+<p class="lead">Eden on the Grill is the perfect spot for a night out with friends or family. Catch up with friends, watch a game, or simply enjoy some good food, with a fully stocked bar and a pool table for any occasion.</p>
+</div></section>
+<section class="sec" style="padding-top:0"><div class="wrap">
+<div class="sec-head center rv"><span class="eyebrow">Why visit</span><h2 class="h2">Eden on the Grill</h2></div>
+<div class="feats">{phtml}</div>
+</div></section>
+<section class="sec mint" id="menu"><div class="wrap">
+{split(img(G(21), 'Eden on the Grill platter', w=1280), 'The menu', 'Hearty grills &amp; platters', '<p>Ribs, wings, burgers and generous sharing platters, made to be enjoyed together. Be sure to ask about our daily specials.</p><p>For the full menu or to reserve a table, message us on WhatsApp and we will send it straight to you.</p>', (WA, 'Request the Menu'), tag='Daily specials', extra=f'<p><a class="link" href="{CON}?kind=Restaurant%20table#enquire">Book a table</a></p>')}
+</div></section>
+<section class="sec tight" style="padding-bottom:clamp(50px,6vw,80px)"><div class="wrap head-row sec-head rv" style="margin-bottom:34px"><div><span class="eyebrow">From the grill</span><h2 class="h3">A taste of Eden</h2></div><div class="strip-nav" data-strip="foodStrip"><button type="button" data-dir="prev" aria-label="Previous photos">&#8592;</button><button type="button" data-dir="next" aria-label="Next photos">&#8594;</button></div></div>
+{strip([1, 9, 30, 15, 36, 37, 10, 26, 11], 'foodStrip', 'food')}</section>
+{band(G(29), 'Outdoors', 'Dinner under <em>Kimberley skies</em>')}
+<section class="sec"><div class="wrap"><div class="info">
+<div class="rv"><span class="eyebrow">Restaurant hours</span><h3>When we are open</h3>{hours_dl()}</div>
+<div class="rv d1"><span class="eyebrow">Bookings</span><h3>Reserve a table</h3><dl><dt>Phone</dt><dd><a href="tel:{TEL}">{TEL_H}</a></dd><dt>WhatsApp</dt><dd><a href="{WA}">{TEL_H}</a></dd><dt>Email</dt><dd><a href="mailto:{MAIL}">{MAIL}</a></dd></dl></div>
+<div class="rv d2"><span class="eyebrow">Where to find us</span><h3>112 Landbou Road</h3><p>South Ridge, Kimberley, 8301</p><a class="link" href="{MAP}" target="_blank" rel="noopener">Get directions</a></div>
+</div></div></section>
+{cta('See you soon', 'Book a table', 'Contact us for bookings or to find out more about our restaurant and menu.', CON + '?kind=Restaurant%20table#enquire', 'Book a Table')}'''
+    page(REST, 'Eden on the Grill Restaurant | Kimberley',
+         'Eden on the Grill: a family-friendly restaurant and sports bar in Kimberley with a fully stocked bar, pool table, grills and daily specials.', c, G(2))
+
+def conferences():
+    def venue(n, title, sub, text, pics, rev=False):
+        ph = ''.join(img(p, f'{title}', w=1280 if i == 0 else 640) for i, p in enumerate(pics))
+        return f'''<div class="venue{' rev' if rev else ''}">
+<div class="venue-img{' one' if len(pics) == 1 else ''} rv">{ph}</div>
+<div class="rv d1"><span class="num">Room {n}</span><h3>{title}</h3><p class="eyebrow" style="margin-bottom:16px">{sub}</p><p>{text}</p></div>
+</div>'''
+    c = f'''{hero('/uploads/Room1b.jpg', 'Conference &amp; function venues', 'Where every event <em>becomes memorable</em>', 'Versatile spaces, modern amenities and attentive service in Kimberley.')}
+<section class="sec intro center" id="start"><div class="narrow rv">
+<span class="script">Gather at Eden</span>
+<p class="lead">Perfectly situated for local and international guests, just 5km from Kimberley Airport and 3km from the Diamond Pavilion Mall. Whether you are planning a corporate conference, a wedding reception or a live music event, Eden has the space for it.</p>
+</div></section>
+<section class="sec" style="padding-top:0"><div class="wrap">
+<div class="sec-head center rv"><span class="eyebrow">Our signature venues</span><h2 class="h2">Three rooms, every occasion</h2></div>
+{venue(1, 'The Dynamic Hall', 'Live music &middot; large events', 'Ideal for live music performances and large-scale events, Room 1 offers a spacious, adaptable layout that encourages interaction and enjoyment. Equipped with audio-visual technology and complemented by comprehensive catering, it transforms effortlessly for corporate functions, private parties or entertainment events.', ['/uploads/Room1a.jpg', '/uploads/Room1c.jpg', '/uploads/Room1d.jpg'])}
+{venue(2, 'The Elegant Reception Space', 'Weddings &middot; celebrations', 'Perfect for weddings, family celebrations or business gatherings, Room 2 provides a sophisticated setting with expansive interiors and modern audio and video systems. From custom décor to tailored catering, every detail is designed to create a warm and memorable atmosphere.', ['/uploads/Room2a.jpg', '/uploads/Room2b.jpg', G(4)], rev=True)}
+{venue(3, 'The Professional Meeting Room', 'Meetings &middot; workshops', 'Designed with productivity in mind, Room 3 is the space for business meetings, presentations and workshops. Its modern design and technology ensure a distraction-free environment, with our technical team on hand for anything you need.', ['/uploads/Room3a.jpg'])}
+</div></section>
+{band(G(25), 'Style &amp; service', 'The perfect blend of <em>style and function</em>')}
+<section class="sec"><div class="wrap">
+<div class="sec-head center rv"><span class="eyebrow">Included</span><h2 class="h3">Everything for a seamless event</h2></div>
+<div class="feats">
+<div class="feat rv"><span class="num">01</span><h3>Audio-visual</h3><p>Modern sound, projection and video systems in every venue.</p></div>
+<div class="feat rv d1"><span class="num">02</span><h3>Catering</h3><p>Tailored menus from our own kitchen, from coffee breaks to banquets.</p></div>
+<div class="feat rv d2"><span class="num">03</span><h3>Support</h3><p>A dedicated team on hand to help set up and run your day.</p></div>
+<div class="feat rv"><span class="num">04</span><h3>Accommodation</h3><p>Rooms on site for delegates, speakers and wedding guests.</p></div>
+<div class="feat rv d1"><span class="num">05</span><h3>Parking</h3><p>Secure, free parking for all your guests.</p></div>
+<div class="feat rv d2"><span class="num">06</span><h3>Location</h3><p>5km from Kimberley Airport and 3km from the Diamond Pavilion Mall.</p></div>
+</div></div></section>
+{cta('Plan your event', 'Enquire on availability', 'Contact us to find out more about our venues or to make a booking.', CON + '?kind=Conference%20or%20event#enquire', 'Enquire on Availability')}'''
+    page(CONF, 'Conference &amp; Function Venues in Kimberley | Eden',
+         'Three conference and function venues in Kimberley for conferences, weddings, live music and meetings, with audio-visual, catering and accommodation on site.', c, '/uploads/Room1b.jpg')
+
+def gallery():
+    tiles = ''.join(f'<a href="{G(n)}" data-lb="all" class="rv">{img(G(n), "Eden Lodge, Restaurant and Conference Centre", w=900)}</a>' for n in range(1, 43))
+    c = f'''{hero(G(3), 'Photo gallery', 'Moments <em>at Eden</em>', 'The lodge, the restaurant, the venues and the gardens.')}
+<section class="sec" id="start"><div class="wrap"><div class="masonry">{tiles}</div></div></section>
+{cta('Come and see', 'Experience Eden in person', 'We would love to welcome you. Get in touch to plan your stay, meal or event.', CON + '#enquire', 'Make an enquiry')}'''
+    page(GAL, 'Photo Gallery | Eden Lodge, Restaurant &amp; Conference Centre',
+         'Photos of Eden Lodge, Eden on the Grill restaurant, the conference venues and gardens in Kimberley.', c, G(3))
+
+def contact():
+    c = f'''{hero(G(16), 'Contact us', 'We look forward <em>to welcoming you</em>', 'Eden Lodge, Restaurant and Conference Centre, Kimberley.', cue=False)}
+<section class="sec" id="start"><div class="wrap"><div class="info">
+<div class="rv"><span class="eyebrow">Contact details</span><h3>Talk to us</h3><dl><dt>Telephone</dt><dd><a href="tel:{TEL}">{TEL_H}</a></dd><dt>WhatsApp</dt><dd><a href="{WA}">{TEL_H}</a></dd><dt>Email</dt><dd><a href="mailto:{MAIL}">{MAIL}</a></dd></dl></div>
+<div class="rv d1"><span class="eyebrow">Hours</span><h3>When to find us</h3><dl><dt>Office</dt><dd>Mon – Fri, 9am – 4pm</dd></dl><p style="margin:14px 0 6px;color:var(--ink)">Restaurant</p>{hours_dl()}</div>
+<div class="rv d2"><span class="eyebrow">Physical address</span><h3>112 Landbou Road</h3><p>South Ridge, Kimberley, 8301<br>South Africa</p><a class="link" href="{MAP}" target="_blank" rel="noopener">Get directions</a></div>
+</div></div></section>
+<section class="sec mint" id="enquire"><div class="wrap">
+<div class="split"><div class="split-txt rv"><span class="script">Let us contact you</span><h2>Send an enquiry</h2><span class="rule"></span><p>Share a few details and our team will get back to you to confirm availability and rates.</p><p>Prefer to chat? <a class="link" href="{WA}">WhatsApp us</a></p></div>
+<form id="enquiryForm" class="rv d1" novalidate>
+<input type="hidden" name="_subject" value="Website enquiry - Eden Lodge, Restaurant and Conference Centre">
+<input type="hidden" name="_template" value="table">
+<input type="hidden" name="_captcha" value="false">
+<label class="hp" aria-hidden="true">Leave empty<input type="text" name="_honey" tabindex="-1" autocomplete="off"></label>
+<div class="row2"><label class="field"><span>Your name *</span><input name="Name" required maxlength="80" autocomplete="name"></label><label class="field"><span>Telephone *</span><input name="Telephone" type="tel" required maxlength="40" autocomplete="tel"></label></div>
+<div class="row2"><label class="field"><span>Email *</span><input name="email" type="email" required maxlength="125" autocomplete="email"></label><label class="field"><span>City / Town *</span><input name="City/Town" required maxlength="125" autocomplete="address-level2"></label></div>
+<div class="row2"><label class="field"><span>Enquiry about</span><select name="kind"><option>Accommodation</option><option>Restaurant table</option><option>Conference or event</option><option>Trampoline Park</option><option>Something else</option></select></label><label class="field"><span>Guests</span><select name="guests"><option></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5 – 10</option><option>10 – 50</option><option>50+</option></select></label></div>
+<div class="row2"><label class="field"><span>Arrival / date</span><input type="date" name="arrive"></label><label class="field"><span>Departure</span><input type="date" name="depart"></label></div>
+<label class="field"><span>Your enquiry</span><textarea name="Enquiry" maxlength="2000"></textarea></label>
+<button class="btn solid" type="submit">Submit enquiry {ARROW}</button>
+<p class="form-msg" role="status" aria-live="polite"></p>
+</form></div>
+</div></section>
+<iframe class="map" title="Map to Eden Lodge, 112 Landbou Road, Kimberley" src="{MAP_EMBED}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>'''
+    page(CON, 'Contact Eden Lodge, Restaurant &amp; Conference Centre | Kimberley',
+         'Contact Eden in Kimberley: +27 60 333 9333, WhatsApp or contact@welcometoeden.co.za. 112 Landbou Rd, South Ridge, Kimberley.', c, G(16))
+
+def legal(path, title, src):
+    body = open(src, encoding='utf8').read()
+    body = re.sub(r'<h1>.*?</h1>', '', body, flags=re.S)
+    body = re.sub(r'(<h3>)\s*(<br\s*/?>\s*)+', r'\1', body)
+    body = re.sub(r'(\s*<br\s*/?>\s*(&nbsp;)?\s*)+</h3>', '</h3>', body)
+    body = re.sub(r'<p>\s*<br\s*/?>\s*', '<p>', body)
+    c = f'''<section class="sec" style="padding-top:clamp(140px,16vw,200px)"><div class="narrow legal">
+<span class="eyebrow">Eden Est.</span><h1 class="h2">{title}</h1><span class="rule"></span>
+{body}
+</div></section>'''
+    page(path, f'{title} | Eden Guest House and Conference Centre', f'{title} for Eden Guest House and Conference Centre, Kimberley.', c, plain=True)
+
+
+if __name__ == '__main__':
+    pol = os.path.join(os.path.dirname(__file__), 'policies')
+    home(); accommodation(); restaurant(); conferences(); gallery(); contact()
+    legal(PRIV, 'Privacy Policy', os.path.join(pol, 'privacy.html'))
+    legal(COOK, 'Cookie Policy', os.path.join(pol, 'cookie.html'))

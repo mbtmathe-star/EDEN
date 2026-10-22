@@ -1,0 +1,12 @@
+{
+  "redirects": [
+    { "source": "/p4/eden/privacy-policy", "destination": "/p4/privacy-policy.html", "permanent": true },
+    { "source": "/p4/eden/privacy-policy/", "destination": "/p4/privacy-policy.html", "permanent": true },
+    { "source": "/p7/eden/cookie-policy", "destination": "/p4/cookie-policy.html", "permanent": true },
+    { "source": "/p7/eden/cookie-policy/", "destination": "/p4/cookie-policy.html", "permanent": true },
+    { "source": "/g1/:path*", "destination": "/gallery/", "permanent": true },
+    { "source": "/bookingrequest.asp", "destination": "/p3/contact-us/contact-eden-lodge,-restaurant-and-conference-centre/#enquire", "permanent": true },
+    { "source": "/enquiry/:path*", "destination": "/p3/contact-us/contact-eden-lodge,-restaurant-and-conference-centre/#enquire", "permanent": true },
+    { "source": "/default.asp", "destination": "/", "permanent": true }
+  ]
+}

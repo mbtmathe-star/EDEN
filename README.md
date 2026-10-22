@@ -1,10 +1,24 @@
-# Eden – Lodge, Restaurant & Conference Centre (Kimberley)
+# Eden – Lodge, Restaurant, Conference Centre & Trampoline Park (Kimberley)
 
-Static clone of https://www.welcometoeden.co.za with the Kimberley Trampoline Park added as one of the offerings.
+Static website for https://welcometoeden.co.za, deployed on Vercel (no build step on Vercel).
 
-- `/` and `/p*`, `/gallery`, `/enquiry`, `/bookingrequest.asp` – the Eden site (cloned as-is)
-- `/trampoline-park/` – the trampoline park booking demo (its own design, self-contained in that folder)
+## Structure
 
-No build step; deploy as a static site.
+- `index.html`, `p11/…`, `p12/…`, `p13/…`, `gallery/`, `p3/…`, `p4/…` – Eden pages (same URLs as the old site)
+- `css/eden.css`, `js/eden.js` – shared styles and behaviour
+- `img/` – logos, favicon and web-sized photos (`img/g/`); original photos live in `uploads/`
+- `trampoline-park/` – the Kimberley Trampoline Park booking demo (own design)
+- `vercel.json` – redirects from old URLs (booking enquiry, old policy and gallery links)
 
-Not yet working: the enquiry and booking forms post to server-side ASP scripts (`ContactFormSubmit.asp`, `BookingRequestS.asp`) that don't exist in this static copy.
+## Editing content
+
+Page content is in `_src/build.py`. After editing it, regenerate the pages:
+
+    python _src/build.py
+
+(needs Python with Pillow). `_src` is not deployed.
+
+## Forms
+
+The enquiry form (Contact page, and the "Book now" panel which hands over to it) sends via FormSubmit
+to contact@welcometoeden.co.za. The first submission triggers a one-time activation email to that inbox.
