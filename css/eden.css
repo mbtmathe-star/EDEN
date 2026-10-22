@@ -207,7 +207,8 @@ strong{font-weight:500;color:var(--ink)}
 /* rooms / venues list */
 .venue{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(30px,6vw,90px);align-items:center;padding-block:clamp(50px,7vw,90px);border-top:1px solid var(--line)}
 .venue:first-child{border-top:0;padding-top:0}
-.venue.rev .venue-img{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.venue.rev .venue-img{order:2}
+.venue-img{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .venue-img img{width:100%;height:auto;object-fit:cover;aspect-ratio:4/3;background:var(--mint)}
 .venue-img img:first-child{grid-column:1/-1;aspect-ratio:16/10}
 .venue-img.one{grid-template-columns:1fr}
@@ -300,3 +301,20 @@ strong{font-weight:500;color:var(--ink)}
   .lb .pv,.lb .nx{top:auto;bottom:16px;margin:0}
   .lb .cnt{bottom:34px}
 }
+
+/* photo mosaic: one tall feature + four, all visible at once */
+.mosaic{display:grid;grid-template-columns:1.2fr 1fr 1fr;grid-auto-rows:clamp(190px,20vw,300px);gap:14px}
+.mosaic a{overflow:hidden;background:var(--mint);display:block}
+.mosaic a:first-child{grid-row:span 2}
+.mosaic img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+.mosaic a:hover img{transform:scale(1.04)}
+@media (max-width:760px){.mosaic{grid-template-columns:1fr 1fr;grid-auto-rows:160px;gap:10px}.mosaic a:first-child{grid-column:1/-1;grid-row:span 2}}
+
+/* gallery groups */
+.gal-nav{position:sticky;top:68px;z-index:20;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);display:flex;gap:6px 30px;flex-wrap:wrap;justify-content:center;padding:16px var(--gutter)}
+.gal-nav a{font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);padding:4px 0;border-bottom:1px solid transparent;transition:color .3s,border-color .3s}
+.gal-nav a:hover,.gal-nav a.on{color:var(--green);border-bottom-color:var(--yellow)}
+.gal-group{scroll-margin-top:140px}
+.gal-group+.gal-group{margin-top:clamp(70px,9vw,120px)}
+.gal-group .head-row{margin-bottom:30px}
+.gal-group .count{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:20px}

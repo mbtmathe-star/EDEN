@@ -159,5 +159,18 @@
     });
   }
 
+  /* gallery tabs: highlight the group in view */
+  var gnav = d.querySelector('.gal-nav');
+  if (gnav && 'IntersectionObserver' in window) {
+    var tabs = gnav.querySelectorAll('a');
+    var gio = new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        tabs.forEach(function (t) { t.classList.toggle('on', t.getAttribute('href') === '#' + en.target.id); });
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    d.querySelectorAll('.gal-group').forEach(function (g) { gio.observe(g); });
+  }
+
   var y = d.getElementById('yr'); if (y) y.textContent = new Date().getFullYear();
 })();
