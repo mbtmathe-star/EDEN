@@ -100,7 +100,7 @@ def head(title, desc, path, hero_img=None):
 <link rel="icon" href="/img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&family=Sacramento&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&family=Pinyon+Script&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/eden.css?v={ver('/css/eden.css')}">
 {pre}
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WWD577N0KL"></script>
@@ -195,11 +195,6 @@ def split(pic, eyebrow, title, body, cta=None, rev=False, tag='', wide=False, ex
 <div class="split-txt rv d1"><h2>{title}</h2>{sub}{body}{extra}{btn}</div>
 </div>'''
 
-def collage(a, b, alt_a, alt_b, logo=False):
-    """Two photos overlapping, both shown whole (Passalacqua-style pairing)."""
-    second = img(b, alt_b, w=900) if not logo else f'<span class="lg">{img(b, alt_b, w=600)}</span>'
-    return f'<div class="collage rv"><div class="a">{img(a, alt_a, w=1280)}</div><div class="b{" logo" if logo else ""}">{second}</div></div>'
-
 def feature(title, sub, text, pics, cta=None, rev=False):
     btn = f'<a class="btn" href="{cta[0]}">{cta[1]} {ARROW}</a>' if cta else ''
     return f'''<div class="feature{' rev' if rev else ''}">
@@ -252,19 +247,19 @@ def home():
 <section class="sec" style="padding-top:0"><div class="wrap">
 {feature('Accommodation', 'The Lodge &middot; from R750 per room',
   'Superior rooms for two and family rooms for up to four, each with a king-size bed, DSTV, air conditioning, uncapped Wi-Fi and daily housekeeping. A peaceful home-away-from-home for travellers, families and business guests alike.',
-  collage(E('guest-reading-bed'), E('room-green-throw'), 'A guest relaxing in bed at Eden Lodge', 'Superior room with a green throw'),
+  img(E('guest-reading-bed'), 'A guest relaxing in bed at Eden Lodge', w=1280),
   (ACC, 'Book Accommodation'))}
 {feature('Eden on the Grill', 'Restaurant &amp; sports bar',
   'A fully stocked bar, a pool table and a menu of hearty grills, ribs and generous sharing platters. Relaxed and family-friendly, with the big game on screen and daily specials well worth asking about.',
-  collage(G(30), E('lounge-night'), 'Loaded burger at Eden on the Grill', 'The bar at night'),
+  img(G(30), 'Loaded burger at Eden on the Grill', w=1280),
   (REST, 'View Menu'), rev=True)}
 {feature('Conferences &amp; Events', 'Three venues in Kimberley',
   'Live music in the Dynamic Hall, weddings and celebrations in the Reception Space, and focused meetings in the Professional Meeting Room, with audio-visual, catering and a dedicated team to look after every detail.',
-  collage('/uploads/Room1b.jpg', E('event-lounge'), 'The Dynamic Hall set for an event', 'A launch event in the lounge'),
+  img(G(4), 'Reception tables set for a wedding at Eden', w=1280),
   (CONF, 'Enquire on Availability'))}
 {feature('Kimberley Trampoline Park', 'On the Eden grounds',
   'Bounce, play and celebrate. Jump sessions, birthday parties and group visits for the whole family, just a few steps from the lodge and the restaurant.',
-  collage(E('play-trampoline-night'), '/trampoline-park/assets/logo.png', 'The trampoline and play area at night', 'Kimberley Trampoline Park', logo=True),
+  '<div class="logo-panel">' + img('/trampoline-park/assets/logo.png', 'Kimberley Trampoline Park', w=900) + '</div>',
   (TP, 'Book Jump Session'), rev=True)}
 </div></section>
 {band(E('garden-night'), 'Take refuge', 'In our greenery, <em>away from the crowds</em>', 'A sparkling pool, a braai area and quiet gardens to come back to at the end of the day.')}
@@ -320,14 +315,14 @@ def restaurant():
 <section class="sec" style="padding-top:0" id="menu"><div class="wrap">
 {feature('Hearty grills &amp; platters', 'Our menu &middot; daily specials',
   'Ribs, wings, burgers and generous sharing platters, made to be enjoyed together. Be sure to ask about the daily specials. For the full menu, message us on WhatsApp and we will send it straight to you.',
-  collage(G(30), G(21), 'Loaded burger at Eden on the Grill', 'Sharing platter at Eden on the Grill'),
+  img(G(9), 'Eden on the Grill sharing platter', w=1280),
   (WA, 'Request the Menu'))}
 {feature('Stay a little longer', 'Sports bar &middot; pool table &middot; lounge',
   'A fully stocked bar, the big game on screen and deep sofas to sink into with friends. Relaxed, family-friendly and welcoming every evening we are open.',
-  collage(E('lounge-night'), G(2), 'The bar at Eden on the Grill at night', 'The thatched bar in daylight'),
+  img(E('lounge-night'), 'The bar at Eden on the Grill at night', w=1280),
   (CON + '?kind=Restaurant%20table#enquire', 'Book a Table'), rev=True)}
 </div></section>
-{marquee([30, 21, 15, 1, 9, 10, 26], 'Food at Eden on the Grill')}
+<section class="sec" style="padding-top:0"><div class="wrap"><div class="dishes">{''.join(f'<a href="{G(n)}" data-lb="food" class="rv">' + img(G(n), 'Dish at Eden on the Grill', w=900) + '</a>' for n in (30, 21, 15))}</div></div></section>
 {band(E('patio-lights'), 'Outdoors', 'Dinner under <em>Kimberley skies</em>')}
 <section class="sec"><div class="wrap"><div class="info">
 <div class="rv"><h3>Restaurant hours</h3>{hours_dl()}</div>
