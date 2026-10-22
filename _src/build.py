@@ -244,6 +244,14 @@ FAC = ['Secure, free parking', 'Braai facilities and a BBQ / picnic area', 'A we
        'On-site laundry service', 'A refreshing outdoor pool', 'Eden on the Grill restaurant',
        'Wi-Fi throughout the property', 'Kimberley Trampoline Park on site']
 
+def two_up(left, right):
+    """Reference two-up: narrow portrait photo (1/3) beside a wide photo (2/3), equal height."""
+    def col(cls, title, sub, text, src, alt, href, label):
+        return (f'<div class="{cls}"><a href="{href}" class="pq-pic"><span class="reveal settle">{img(src, alt, w=1280)}</span></a>'
+                f'<div class="pq-txt rv"><h3><a href="{href}">{title}</a></h3><p class="pq-sub">{sub}</p><p>{text}</p>'
+                f'<p class="pq-link"><a href="{href}">{label}</a></p></div></div>')
+    return '<div class="pq-two">' + col('l', *left) + col('r', *right) + '</div>'
+
 def home():
     c = f'''{hero(G(7), '', 'A delightful <em>dwelling</em>', 'Lodge, restaurant, conference centre and trampoline park in Kimberley, where comfort and luxury meet exceptional service.', full=True, cls='pq-hero')}
 <section class="sec pq-s01" id="start"><div class="pq-wrap rv">
@@ -256,20 +264,17 @@ def home():
   'Superior rooms for two and family rooms for up to four, each with a king-size bed, DSTV, air conditioning, uncapped Wi-Fi and daily housekeeping. A peaceful home-away-from-home for travellers, families and business guests alike.',
   img(E('guest-reading-bed'), 'A guest relaxing in bed at Eden Lodge', w=1280),
   (ACC, 'Book Accommodation'), pq='season')}
-{feature('Eden on the Grill', 'Restaurant &amp; sports bar',
-  'A fully stocked bar, a pool table and a menu of hearty grills, ribs and generous sharing platters. Relaxed and family-friendly, with the big game on screen and daily specials well worth asking about.',
-  img(G(30), 'Loaded burger at Eden on the Grill', w=1280),
-  (REST, 'View Menu'), pq='suites')}
-</div></section>
-<section class="sec" style="padding-top:0"><div class="wrap">
-{feature('Conferences &amp; Events', 'Three venues in Kimberley',
-  'Live music in the Dynamic Hall, weddings and celebrations in the Reception Space, and focused meetings in the Professional Meeting Room, with audio-visual, catering and a dedicated team to look after every detail.',
-  img(E('event-lounge'), 'A launch event in the lounge at Eden', 'sq', w=1280),
-  (CONF, 'Enquire on Availability'))}
+{two_up(
+  ('Eden on the Grill', 'Restaurant &amp; sports bar',
+   'A fully stocked bar, a pool table and a menu of hearty grills, ribs and generous sharing platters. Relaxed and family-friendly, with the big game on screen and daily specials well worth asking about.',
+   G(30), 'Loaded burger at Eden on the Grill', REST, 'View Menu'),
+  ('Conferences &amp; Events', 'Three venues in Kimberley',
+   'Live music in the Dynamic Hall, weddings and celebrations in the Reception Space, and focused meetings in the Professional Meeting Room, with audio-visual, catering and a dedicated team to look after every detail.',
+   E('event-lounge'), 'A launch event in the lounge at Eden', CONF, 'Enquire on Availability'))}
 {feature('Kimberley Trampoline Park', 'On the Eden grounds',
   'Bounce, play and celebrate. Jump sessions, birthday parties and group visits for the whole family, just a few steps from the lodge and the restaurant.',
   '<div class="logo-panel">' + img('/trampoline-park/assets/logo.png', 'Kimberley Trampoline Park', w=900) + '</div>',
-  (TP, 'Book Jump Session'), rev=True)}
+  (TP, 'Book Jump Session'), pq='suites')}
 </div></section>
 {band(E('garden-dining-2'), 'Take refuge', 'In our greenery, <em>away from the crowds</em>', 'A sparkling pool, a braai area and quiet gardens to come back to at the end of the day.')}
 <section class="sec find"><div class="wrap find-in">

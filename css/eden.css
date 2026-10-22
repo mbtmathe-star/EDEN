@@ -463,3 +463,31 @@ img.sq{aspect-ratio:1/1;object-fit:cover;width:100%}
   .pq-feat+.pq-feat{margin-top:80px}
 }
 .pq-feat p.pq-link{font-size:13px;line-height:1.6;font-weight:400;color:#343434;margin-top:6px}
+
+/* reference two-up: narrow portrait 1/3 beside wide 2/3, same height */
+.pq-two{display:flex;align-items:flex-start;margin:130px -15px 0}
+.pq-two>div{padding-inline:15px}
+.pq-two .l{width:33.3333%}.pq-two .r{width:66.6667%}
+.pq-two .pq-pic{display:block;overflow:hidden}
+.pq-two .pq-pic .reveal{display:block}
+.pq-two .pq-pic img{display:block;width:100%;height:100%;object-fit:cover}
+.pq-two .l .pq-pic{aspect-ratio:390/472}
+.pq-two .r .pq-pic{aspect-ratio:810/476}
+.pq-two .pq-pic .reveal,.pq-two .pq-pic .reveal img{height:100%}
+.pq-two .pq-txt{margin-top:24px;padding-right:30px}
+.pq-two h3{font-family:var(--serif);font-weight:400;font-size:26px;line-height:1.45;color:#343434;margin:0 0 14px}
+.pq-two h3 a{color:inherit}
+.pq-two p{font-size:16px;line-height:1.5;color:#666;margin:0 0 1em}
+.pq-two p.pq-sub{font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#343434;margin:0 0 18px}
+.pq-two p.pq-link{font-size:13px;line-height:1.6;font-weight:400;color:#343434;margin-top:6px}
+.pq-two+.pq-feat{margin-top:130px}
+/* trampoline logo as the large picture in the suites layout */
+.pq-feat .logo-panel{aspect-ratio:3/2;background:var(--mint);display:grid;place-items:center;padding:8%}
+.pq-feat .logo-panel img{width:auto;max-width:62%;height:auto}
+@media (max-width:1023px){
+  .pq-two{flex-direction:column;margin-top:100px}
+  .pq-two .l,.pq-two .r{width:100%}
+  .pq-two .r{margin-top:60px}
+  .pq-two .l .pq-pic{aspect-ratio:4/5;max-width:520px}
+}
+@media (max-width:767px){.pq-two{margin-top:80px}.pq-two+.pq-feat{margin-top:80px}}
