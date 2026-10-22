@@ -177,9 +177,9 @@ def page(path, title, desc, content, hero_img=None, plain=False):
 
 
 # ---------- building blocks ----------
-def hero(src, eyebrow, h1, sub='', full=False, cue=True):
+def hero(src, eyebrow, h1, sub='', full=False, cue=True, cls=''):
     lines = ''.join(f'<span class="ln"><span>{l}</span></span>' for l in re.split(r'\s+(?=<em>)', h1))
-    return f'''<section class="hero{'' if full else ' sub'}">
+    return f'''<section class="hero{'' if full else ' sub'}{(' ' + cls) if cls else ''}">
 {img(src, '', 'hero-img', lazy=False)}
 <div class="hero-c">
 <h1>{lines}</h1>
@@ -195,7 +195,14 @@ def split(pic, eyebrow, title, body, cta=None, rev=False, tag='', wide=False, ex
 <div class="split-txt rv d1"><h2>{title}</h2>{sub}{body}{extra}{btn}</div>
 </div>'''
 
-def feature(title, sub, text, pics, cta=None, rev=False):
+def feature(title, sub, text, pics, cta=None, rev=False, pq=''):
+    if pq:
+        link = f'<p class="pq-link"><a href="{cta[0]}">{cta[1]}</a></p>' if cta else ''
+        tag = 'h3' if pq == 'season' else 'h2'
+        return f'''<div class="pq-feat {pq}">
+<div class="pq-pic"><div class="reveal settle">{pics}</div></div>
+<div class="pq-txt rv d1"><{tag}>{title}</{tag}><p class="pq-sub">{sub}</p><p>{text}</p>{link}</div>
+</div>'''
     btn = f'<a class="btn" href="{cta[0]}">{cta[1]} {ARROW}</a>' if cta else ''
     return f'''<div class="feature{' rev' if rev else ''}">
 <div class="feature-pic"><div class="reveal" data-speed="0.06">{pics}</div></div>
@@ -238,21 +245,23 @@ FAC = ['Secure, free parking', 'Braai facilities and a BBQ / picnic area', 'A we
        'Wi-Fi throughout the property', 'Kimberley Trampoline Park on site']
 
 def home():
-    c = f'''{hero(G(7), '', 'A delightful <em>dwelling</em>', 'Lodge, restaurant, conference centre and trampoline park in Kimberley, where comfort and luxury meet exceptional service.', full=True)}
-<section class="sec intro center" id="start"><div class="narrow rv">
+    c = f'''{hero(G(7), '', 'A delightful <em>dwelling</em>', 'Lodge, restaurant, conference centre and trampoline park in Kimberley, where comfort and luxury meet exceptional service.', full=True, cls='pq-hero')}
+<section class="sec pq-s01" id="start"><div class="pq-wrap rv">
 <span class="script">Welcome to Eden</span>
 <p class="lead">Our lodge offers a relaxing stay with stylish accommodation for those seeking a peaceful retreat. Whether you are travelling for business or leisure, Eden is the perfect place to unwind, connect and enjoy.</p>
 <p class="quote">&ldquo;Eden promises a memorable experience for all who visit.&rdquo;</p>
 </div></section>
-<section class="sec" style="padding-top:0"><div class="wrap">
+<section class="sec pq-feats" style="padding-top:0"><div class="pq-wrap">
 {feature('Accommodation', 'The Lodge &middot; from R750 per room',
-  'Superior rooms for two and family rooms for up to four, each with a king-size bed, DSTV, air conditioning, uncapped Wi-Fi and daily housekeeping. A peaceful home-away-from-home for travellers, families and business guests alike.</p><p class="note-box"><strong>Please note:</strong> children aged 0 – 18 are charged 100% of the sharing rate.',
+  'Superior rooms for two and family rooms for up to four, each with a king-size bed, DSTV, air conditioning, uncapped Wi-Fi and daily housekeeping. A peaceful home-away-from-home for travellers, families and business guests alike.',
   img(E('guest-reading-bed'), 'A guest relaxing in bed at Eden Lodge', w=1280),
-  (ACC, 'Book Accommodation'))}
+  (ACC, 'Book Accommodation'), pq='season')}
 {feature('Eden on the Grill', 'Restaurant &amp; sports bar',
   'A fully stocked bar, a pool table and a menu of hearty grills, ribs and generous sharing platters. Relaxed and family-friendly, with the big game on screen and daily specials well worth asking about.',
   img(G(30), 'Loaded burger at Eden on the Grill', w=1280),
-  (REST, 'View Menu'), rev=True)}
+  (REST, 'View Menu'), pq='suites')}
+</div></section>
+<section class="sec" style="padding-top:0"><div class="wrap">
 {feature('Conferences &amp; Events', 'Three venues in Kimberley',
   'Live music in the Dynamic Hall, weddings and celebrations in the Reception Space, and focused meetings in the Professional Meeting Room, with audio-visual, catering and a dedicated team to look after every detail.',
   img(E('event-lounge'), 'A launch event in the lounge at Eden', 'sq', w=1280),

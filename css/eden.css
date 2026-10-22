@@ -409,3 +409,57 @@ img.sq{aspect-ratio:1/1;object-fit:cover;width:100%}
   .dine-pic:last-child,.dine-pic:first-child{margin:0}
   .dine-pic img{aspect-ratio:4/3}
 }
+
+/* ===== Home: the four sections restyled to the reference (hero, welcome, two features) ===== */
+.pq-wrap{max-width:1780px;margin-inline:auto;padding-inline:5vw}
+/* 1. hero — reference intro */
+.hero.pq-hero::after{background:linear-gradient(to bottom,rgba(0,0,0,.3) 0%,rgba(0,0,0,0) 20%,rgba(0,0,0,0) 80%,rgba(0,0,0,.7) 100%)}
+.hero.pq-hero .hero-img{opacity:0;transform:scale(1.1);animation:pqIntro 2.4s cubic-bezier(.22,.61,.36,1) .1s forwards}
+.hero.pq-hero .hero-c{padding:0 5vw 70px;max-width:1780px;margin-inline:auto}
+.hero.pq-hero h1{font-weight:300;font-size:70px;line-height:1.1;max-width:none}
+.hero.pq-hero .hero-sub{font-size:26px;line-height:1.45;margin-top:10px;max-width:900px}
+@keyframes pqIntro{to{opacity:1;transform:scale(1)}}
+/* 2. welcome — one large left-aligned serif paragraph */
+.pq-s01 .script{text-align:left}
+.pq-s01 .lead{width:75%;font-family:var(--serif);font-weight:400;font-size:44px;line-height:1.25;color:#343434;margin:0}
+.pq-s01 .quote{margin-top:30px}
+/* 3 + 4. features */
+.pq-feat{display:flex;align-items:flex-start;margin-inline:-15px}
+.pq-feat+.pq-feat{margin-top:130px}
+.pq-feat>div{padding-inline:15px}
+.pq-feat .pq-pic{width:66.6667%}
+.pq-feat .pq-txt{width:33.3333%;padding-left:45px;padding-bottom:40px}
+.pq-feat.suites{flex-direction:row-reverse}
+.pq-feat.suites .pq-txt{padding-left:15px;padding-right:45px}
+.pq-feat .pq-pic img{display:block;width:100%;height:auto}
+.pq-feat h3{font-family:var(--serif);font-weight:400;font-size:26px;line-height:1.45;color:#343434;margin:0 0 20px}
+.pq-feat h2{font-family:var(--serif);font-weight:400;font-size:44px;line-height:1.25;color:#343434;margin:0 0 25px}
+.pq-feat p{font-size:16px;line-height:1.5;color:#666;margin:0 0 1em}
+.pq-feat p.pq-sub{font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#343434;margin:-8px 0 18px}
+.pq-link{font-size:13px;letter-spacing:1px;text-transform:uppercase}
+.pq-link a{position:relative;display:inline-block;padding-left:74px;color:#343434}
+.pq-link a::before{content:"";position:absolute;left:0;top:.75em;width:54px;height:1px;background:#343434;transition:width .25s}
+.pq-link a:hover::before{width:64px}
+/* reference image behaviour: settles from 1.1 to 1 when it enters, photo stays whole */
+.reveal.settle{clip-path:none;transition:none}
+.reveal.settle img{transform:scale(1.1);transition:transform .75s ease}
+.reveal.settle.in img{transform:none}
+@media (prefers-reduced-motion:reduce){.hero.pq-hero .hero-img{animation:none;opacity:1;transform:none}.reveal.settle img{transform:none}}
+@media (max-width:1023px){
+  .pq-wrap{padding-inline:9vw}
+  .hero.pq-hero .hero-c{padding-inline:9vw}
+  .hero.pq-hero h1{font-size:54px}
+  .pq-s01 .lead{width:100%;font-size:36px}
+  .pq-feat,.pq-feat.suites{flex-direction:column}
+  .pq-feat .pq-pic,.pq-feat .pq-txt{width:100%}
+  .pq-feat .pq-txt,.pq-feat.suites .pq-txt{padding:30px 15px 0}
+  .pq-feat h2{font-size:36px}
+}
+@media (max-width:767px){
+  .pq-wrap,.hero.pq-hero .hero-c{padding-inline:5.1vw}
+  .hero.pq-hero h1{font-size:46px}
+  .hero.pq-hero .hero-sub{font-size:21px}
+  .pq-s01 .lead{font-size:26px;line-height:1.45}
+  .pq-feat+.pq-feat{margin-top:80px}
+}
+.pq-feat p.pq-link{font-size:13px;line-height:1.6;font-weight:400;color:#343434;margin-top:6px}
