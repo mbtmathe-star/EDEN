@@ -268,12 +268,12 @@ def home():
   img(E('guest-reading-bed'), 'A guest relaxing in bed at Eden Lodge', w=1280),
   (ACC, 'Book Accommodation'), pq='season')}
 {two_up(
-  ('Eden on the Grill', 'Restaurant &amp; sports bar',
-   'A fully stocked bar, a pool table and a menu of hearty grills, ribs and generous sharing platters. Relaxed and family-friendly, with the big game on screen and daily specials well worth asking about.',
-   G(30), 'Loaded burger at Eden on the Grill', REST, 'View Menu'),
   ('Conferences &amp; Events', 'Three venues in Kimberley',
    'Live music in the Dynamic Hall, weddings and celebrations in the Reception Space, and focused meetings in the Professional Meeting Room, with audio-visual, catering and a dedicated team to look after every detail.',
-   E('event-lounge'), 'A launch event in the lounge at Eden', CONF, 'Enquire on Availability'))}
+   E('event-lounge'), 'A launch event in the lounge at Eden', CONF, 'Enquire on Availability'),
+  ('Eden on the Grill', 'Restaurant &amp; sports bar',
+   'A fully stocked bar, a pool table and a menu of hearty grills, ribs and generous sharing platters. Relaxed and family-friendly, with the big game on screen and daily specials well worth asking about.',
+   G(30), 'Loaded burger at Eden on the Grill', REST, 'View Menu'))}
 {feature('Kimberley Trampoline Park', 'On the Eden grounds',
   'Bounce, play and celebrate. Jump sessions, birthday parties and group visits for the whole family, just a few steps from the lodge and the restaurant.',
   '<div class="logo-panel">' + img('/trampoline-park/assets/logo.png', 'Kimberley Trampoline Park', w=900) + '</div>',
