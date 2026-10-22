@@ -512,3 +512,34 @@ html:not(.fonts-ready) .hero h1 .ln>span,html:not(.fonts-ready) .hero .hero-sub{
 .pq-sheet~.ftr,body:has(.pq-sheet) .ftr{position:relative;z-index:1}
 .hero.pq-hero.intro-done .hero-img{animation:none;opacity:1}
 .hero.pq-hero .hero-img,.hero.pq-hero .hero-c{will-change:transform,opacity}
+
+/* ===== mobile: keep the important part of every photo in frame ===== */
+img{object-position:50% 50%}
+/* focal points for photos that get cropped (hero / bands) */
+img[src*="EdenLodgeRestaurantGallery-07"]{object-position:62% 72%}   /* lodge: the thatched building, not the sky */
+img[src*="guest-reading-tray"]{object-position:38% 45%}             /* guest reading */
+img[src*="guest-bed-plant"]{object-position:58% 55%}                /* guest, not the plant */
+img[src*="entrance-night-2"]{object-position:55% 62%}               /* lit entrance */
+img[src*="EdenLodgeRestaurantGallery-03"]{object-position:45% 60%}  /* people at the bar */
+img[src*="Room1c"]{object-position:50% 60%}
+img[src*="garden-dining-2"]{object-position:45% 60%}
+img[src*="patio-lights"]{object-position:55% 40%}
+img[src*="lounge-night-2"]{object-position:50% 55%}
+img[src*="EdenLodgeRestaurantGallery-22"]{object-position:50% 65%}  /* pool */
+img[src*="event-lounge"]{object-position:50% 55%}                   /* speakers on stage */
+img[src*="EdenLodgeRestaurantGallery-30"]{object-position:45% 55%}  /* burger */
+@media (max-width:760px){
+  /* heroes: a little shorter so more of the photo fits */
+  .hero.sub{height:72svh;min-height:420px}
+  /* bands: show the photo, not a narrow slice of it */
+  .band{min-height:62svh}
+  .band img{inset:-6% 0;height:112%}
+  .band-c{padding:56px 22px}
+  /* venues: a lone second photo spans the full width */
+  .venue-img img:nth-child(2):last-child{grid-column:1/-1;aspect-ratio:16/10}
+  /* two-up: show more of each photo */
+  .pq-two .l .pq-pic{aspect-ratio:4/3;max-width:none}
+  .pq-two .r .pq-pic{aspect-ratio:4/3}
+  .pq-feat .logo-panel{aspect-ratio:4/3}
+  .dine-pic img{aspect-ratio:4/3}
+}
