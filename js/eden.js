@@ -11,7 +11,7 @@
      reveals and links keep working; it is paused while an overlay is open. */
   var lenis = null;
   if (window.Lenis && !reduce) {
-    lenis = new window.Lenis({ duration: 1.1, smoothWheel: true, easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); } });
+    lenis = new window.Lenis({ lerp: 0.08, wheelMultiplier: 1.2, smoothWheel: true });
     var loop = function (t) { lenis.raf(t); requestAnimationFrame(loop); };
     requestAnimationFrame(loop);
     d.querySelectorAll('a[href^="#"]').forEach(function (a) {
@@ -26,6 +26,26 @@
   function lock(on) {
     body.classList.toggle('locked', on);
     if (lenis) { if (on) lenis.stop(); else lenis.start(); }
+  }
+
+  /* home hero (reference): pinned while the page slides over it; the photo slowly zooms
+     back in and the heading fades as you scroll. Starts after the load-in animation ends. */
+  var ph = d.querySelector('.pq-hero');
+  if (ph) {
+    var pimg = ph.querySelector('.hero-img'), ptxt = ph.querySelector('.hero-c'), introDone = false;
+    var scrub = function () {
+      var vh = window.innerHeight, y = window.scrollY, p = Math.min(1, Math.max(0, y / vh));
+      if (introDone) pimg.style.transform = 'scale(' + (1 + 0.1 * p).toFixed(4) + ')';
+      ptxt.style.opacity = (1 - Math.min(1, y / (vh * 0.12))).toFixed(3);
+      ph.style.visibility = y > vh * 1.02 ? 'hidden' : '';
+    };
+    var finish = function () { if (introDone) return; introDone = true; ph.classList.add('intro-done'); scrub(); };
+    pimg.addEventListener('animationend', finish);
+    setTimeout(finish, 3200);
+    if (lenis) lenis.on('scroll', scrub);
+    else { var sTick = false; window.addEventListener('scroll', function () { if (!sTick) { sTick = true; requestAnimationFrame(function () { scrub(); sTick = false; }); } }, { passive: true }); }
+    window.addEventListener('resize', scrub);
+    scrub();
   }
 
   /* header: transparent over the hero, solid once scrolled */

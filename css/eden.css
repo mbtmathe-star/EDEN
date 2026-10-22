@@ -505,3 +505,10 @@ html.lenis,html.lenis body{height:auto}
 /* hero text waits for the real font, so the heading never jumps when the font arrives */
 html:not(.fonts-ready) .hero-c{visibility:hidden}
 html:not(.fonts-ready) .hero h1 .ln>span,html:not(.fonts-ready) .hero .hero-sub{animation-play-state:paused}
+
+/* ===== home scroll (reference): the hero stays put and the page slides up over it like a sheet ===== */
+.hero.pq-hero{position:fixed;top:0;left:0;right:0;height:100vh;height:100svh;min-height:0;z-index:0}
+.pq-sheet{position:relative;z-index:1;margin-top:100vh;margin-top:100svh;background:#fff}
+.pq-sheet~.ftr,body:has(.pq-sheet) .ftr{position:relative;z-index:1}
+.hero.pq-hero.intro-done .hero-img{animation:none;opacity:1}
+.hero.pq-hero .hero-img,.hero.pq-hero .hero-c{will-change:transform,opacity}

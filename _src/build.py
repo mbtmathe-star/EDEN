@@ -256,6 +256,7 @@ def two_up(left, right):
 
 def home():
     c = f'''{hero(G(7), '', 'A delightful <em>dwelling</em>', 'Lodge, restaurant, conference centre and trampoline park in Kimberley, where comfort and luxury meet exceptional service.', full=True, cls='pq-hero')}
+<div class="pq-sheet">
 <section class="sec pq-s01" id="start"><div class="pq-wrap rv">
 <span class="script">Welcome to Eden</span>
 <p class="lead">Our lodge offers a relaxing stay with stylish accommodation for those seeking a peaceful retreat. Whether you are travelling for business or leisure, Eden is the perfect place to unwind, connect and enjoy.</p>
@@ -286,7 +287,8 @@ def home():
 <a class="btn" href="{MAP}" target="_blank" rel="noopener">Get Directions {ARROW}</a></div>
 <div class="find-map rv d1"><iframe title="Map to Eden Lodge, 112 Landbou Road, Kimberley" src="{MAP_EMBED}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
 </div></section>
-{cta('Your stay awaits', 'Contact Eden today', 'Send us your dates and we will confirm availability, rates and anything else you need.', CON + '#enquire', 'Make an enquiry')}'''
+{cta('Your stay awaits', 'Contact Eden today', 'Send us your dates and we will confirm availability, rates and anything else you need.', CON + '#enquire', 'Make an enquiry')}
+</div>'''
     page(HOME, 'Eden Lodge, Restaurant &amp; Conference Centre in Kimberley',
          'Eden is a lodge, restaurant, conference centre and trampoline park in Kimberley offering comfortable accommodation to travellers, families, business people and contractors.',
          c, G(7))
