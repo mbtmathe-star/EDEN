@@ -261,12 +261,7 @@ strong{font-weight:500;color:var(--ink)}
 .rv.d1{transition-delay:.12s}.rv.d2{transition-delay:.24s}.rv.d3{transition-delay:.36s}
 .no-js .rv{opacity:1;transform:none}
 
-@media (prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  *,*::before,*::after{animation:none!important;transition:none!important}
-  .rv{opacity:1;transform:none}
-  .hero-img{transform:none}
-}
+
 
 @media (max-width:1000px){
   .offer{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -348,7 +343,7 @@ p.sub{font-family:var(--sans);font-size:12.5px;font-weight:400;letter-spacing:.1
 .lines dt{color:var(--ink);font-weight:400}.lines dd{margin:0}
 .lines a:hover{color:var(--green)}
 
-@media (prefers-reduced-motion:reduce){.marquee-track{animation:none}.marquee{overflow-x:auto}}
+
 @media (max-width:760px){
   .feature,.find-in{grid-template-columns:1fr}
   .feature.rev .feature-pic{order:0}
@@ -400,10 +395,7 @@ img.sq{aspect-ratio:1/1;object-fit:cover;width:100%}
 .dine-txt h2{font-size:clamp(34px,3.4vw,50px)}
 .dine-txt .btn{margin-top:26px}
 
-@media (prefers-reduced-motion:reduce){
-  .hero h1 .ln>span,.hero .hero-sub{animation:none;transform:none;opacity:1}
-  .reveal{clip-path:none;transition:none}.reveal img{transform:none;transition:none}
-}
+
 @media (max-width:760px){
   .dine{grid-template-columns:1fr}
   .dine-pic:last-child,.dine-pic:first-child{margin:0}
@@ -444,7 +436,7 @@ img.sq{aspect-ratio:1/1;object-fit:cover;width:100%}
 .reveal.settle{clip-path:none;transition:none}
 .reveal.settle img{transform:scale(1.1);transition:transform .75s ease}
 .reveal.settle.in img{transform:none}
-@media (prefers-reduced-motion:reduce){.hero.pq-hero .hero-img{animation:none;opacity:1;transform:none}.reveal.settle img{transform:none}}
+
 @media (max-width:1023px){
   .pq-wrap{padding-inline:9vw}
   .hero.pq-hero .hero-c{padding-inline:9vw}
@@ -509,7 +501,7 @@ html.lenis,html.lenis body{height:auto}
 /* text eases up a little, never jumps */
 .rv{transform:translateY(22px);transition:opacity 1s ease,transform 1s cubic-bezier(.22,.61,.36,1)}
 .rv.in{transform:none}
-@media (prefers-reduced-motion:reduce){.reveal img,.reveal.settle img{transform:none!important;transition:none}.rv{transform:none}}
+
 /* hero text waits for the real font, so the heading never jumps when the font arrives */
 html:not(.fonts-ready) .hero-c{visibility:hidden}
 html:not(.fonts-ready) .hero h1 .ln>span,html:not(.fonts-ready) .hero .hero-sub{animation-play-state:paused}

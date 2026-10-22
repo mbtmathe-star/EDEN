@@ -3,7 +3,9 @@
 (function () {
   var d = document, root = d.documentElement, body = d.body;
   root.classList.remove('no-js');
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* motion is always on: the owner wants the scroll animation for every visitor,
+     including devices set to reduce motion */
+  var reduce = false;
 
   /* smooth, gliding scroll like the reference. Native scroll position is kept, so the header,
      reveals and links keep working; it is paused while an overlay is open. */
