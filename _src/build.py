@@ -271,7 +271,7 @@ def home():
 {two_up(
   ('Conferences &amp; Events', 'Three venues in Kimberley',
    'Live music in the Dynamic Hall, weddings and celebrations in the Reception Space, and focused meetings in the Professional Meeting Room, with audio-visual, catering and a dedicated team to look after every detail.',
-   E('event-lounge'), 'A launch event in the lounge at Eden', CONF, 'Enquire on Availability'),
+   E('hall-10'), 'A dressed table in the Dynamic Hall at Eden', CONF, 'Enquire on Availability'),
   ('Eden on the Grill', 'Restaurant &amp; sports bar',
    'A fully stocked bar, a pool table and a menu of hearty grills, ribs and generous sharing platters. Relaxed and family-friendly, with the big game on screen and daily specials well worth asking about.',
    G(30), 'Loaded burger at Eden on the Grill', REST, 'View Menu'))}
@@ -352,22 +352,24 @@ def restaurant():
 def conferences():
     def venue(n, title, sub, text, pics, rev=False):
         ph = ''.join(img(p, f'{title}', w=1280 if i == 0 else 640) for i, p in enumerate(pics))
+        if not pics:
+            return f'''<div class="venue noimg"><div class="rv"><span class="num">Room {n}</span><h3>{title}</h3><p class="eyebrow" style="margin-bottom:16px">{sub}</p><p>{text}</p></div></div>'''
         return f'''<div class="venue{' rev' if rev else ''}">
 <div class="venue-img{' one' if len(pics) == 1 else ''} rv">{ph}</div>
 <div class="rv d1"><span class="num">Room {n}</span><h3>{title}</h3><p class="eyebrow" style="margin-bottom:16px">{sub}</p><p>{text}</p></div>
 </div>'''
-    c = f'''{hero('/uploads/Room1c.jpg', 'Conference &amp; function venues', 'Where every event <em>becomes memorable</em>', 'Versatile spaces, modern amenities and attentive service in Kimberley.')}
+    c = f'''{hero(E('hall-07'), 'Conference &amp; function venues', 'Where every event <em>becomes memorable</em>', 'Versatile spaces, modern amenities and attentive service in Kimberley.')}
 <section class="sec intro center" id="start"><div class="narrow rv">
 <span class="script">Gather at Eden</span>
 <p class="lead">Perfectly situated for local and international guests, just 5km from Kimberley Airport and 3km from the Diamond Pavilion Mall. Whether you are planning a corporate conference, a wedding reception or a live music event, Eden has the space for it.</p>
 </div></section>
 <section class="sec" style="padding-top:0"><div class="wrap">
 <div class="sec-head center rv"><span class="eyebrow">Our signature venues</span><h2 class="h2">Three rooms, every occasion</h2></div>
-{venue(1, 'The Dynamic Hall', 'Live music &middot; large events', 'Ideal for live music performances and large-scale events, Room 1 offers a spacious, adaptable layout that encourages interaction and enjoyment. Equipped with audio-visual technology and complemented by comprehensive catering, it transforms effortlessly for corporate functions, private parties or entertainment events.', ['/uploads/Room1b.jpg', '/uploads/Room1a.jpg', '/uploads/Room1d.jpg'])}
-{venue(2, 'The Elegant Reception Space', 'Weddings &middot; celebrations', 'Perfect for weddings, family celebrations or business gatherings, Room 2 provides a sophisticated setting with expansive interiors and modern audio and video systems. From custom décor to tailored catering, every detail is designed to create a warm and memorable atmosphere.', ['/uploads/Room2a.jpg', '/uploads/Room2b.jpg', G(4)], rev=True)}
-{venue(3, 'The Professional Meeting Room', 'Meetings &middot; workshops', 'Designed with productivity in mind, Room 3 is the space for business meetings, presentations and workshops. Its modern design and technology ensure a distraction-free environment, with our technical team on hand for anything you need.', ['/uploads/Room3a.jpg', G(28)])}
+{venue(1, 'The Dynamic Hall', 'Live music &middot; large events', 'Ideal for live music performances and large-scale events, Room 1 offers a spacious, adaptable layout that encourages interaction and enjoyment. Equipped with audio-visual technology and complemented by comprehensive catering, it transforms effortlessly for corporate functions, private parties or entertainment events.', [E('hall-04'), E('hall-08'), E('hall-12')])}
+{venue(2, 'The Elegant Reception Space', 'Weddings &middot; celebrations', 'Perfect for weddings, family celebrations or business gatherings, Room 2 provides a sophisticated setting with expansive interiors and modern audio and video systems. From custom décor to tailored catering, every detail is designed to create a warm and memorable atmosphere.', [E('wed-02'), E('wed-01'), E('wed-03')], rev=True)}
+{venue(3, 'The Professional Meeting Room', 'Meetings &middot; workshops', 'Designed with productivity in mind, Room 3 is the space for business meetings, presentations and workshops. Its modern design and technology ensure a distraction-free environment, with our technical team on hand for anything you need.', [])}
 </div></section>
-{band(E('lounge-night-2'), 'Style &amp; service', 'The perfect blend of <em>style and function</em>')}
+{band(E('hall-14'), 'Style &amp; service', 'The perfect blend of <em>style and function</em>')}
 <section class="sec"><div class="wrap">
 <div class="sec-head center rv"><span class="eyebrow">Included</span><h2 class="h3">Everything for a seamless event</h2></div>
 <div class="feats">
@@ -380,12 +382,12 @@ def conferences():
 </div></div></section>
 {cta('Plan your event', 'Enquire on availability', 'Contact us to find out more about our venues or to make a booking.', CON + '?kind=Conference%20or%20event#enquire', 'Enquire on Availability')}'''
     page(CONF, 'Conference &amp; Function Venues in Kimberley | Eden',
-         'Three conference and function venues in Kimberley for conferences, weddings, live music and meetings, with audio-visual, catering and accommodation on site.', c, '/uploads/Room1c.jpg')
+         'Three conference and function venues in Kimberley for conferences, weddings, live music and meetings, with audio-visual, catering and accommodation on site.', c, E('hall-07'))
 
 GALLERY = [
     ('lodge', 'The Lodge', 'Rest &amp; unwind', [E(n) for n in ('chalets', 'guest-reading-bed', 'room-green-throw', 'guest-bed-plant', 'room-tray', 'guest-coffee-bed', 'bathroom-shelf', 'guest-reading-tray', 'room-green-throw-2', 'guest-magazine', 'coffee-station', 'room-bed-magazine', 'room-tray-close', 'chalets-2', 'chalets-pool', 'chalets-row')]),
     ('dining', 'Dining &amp; Bar', 'Eden on the Grill', [E(n) for n in ('lounge-night-2', 'patio-lights')] + [G(n) for n in (30, 21, 15)] + [E(n) for n in ('lounge-night', 'garden-dining-2', 'patio-lights-2')] + [G(n) for n in (1, 9, 10, 26)] + [E(n) for n in ('garden-dining', 'garden-night', 'garden-dining-3')] + [G(n) for n in (2, 3, 29)]),
-    ('events', 'Events', 'Conferences &amp; celebrations', ['/uploads/Room1b.jpg', G(4), E('event-lounge'), '/uploads/Room1c.jpg', '/uploads/Room2a.jpg', '/uploads/Room1a.jpg', '/uploads/Room2b.jpg', '/uploads/Room1d.jpg', '/uploads/Room3a.jpg', G(28)]),
+    ('events', 'Events', 'Conferences &amp; celebrations', [E(n) for n in ('hall-07', 'wed-02', 'hall-04', 'wed-03', 'hall-10', 'hall-05', 'wed-01', 'hall-08', 'hall-11', 'hall-12', 'hall-06', 'hall-09', 'hall-13', 'hall-14')]),
     ('outdoors', 'Outdoors &amp; Play', 'Pool, gardens &amp; play area', [E(n) for n in ('entrance-night-2', 'play-trampoline-night')] + [G(n) for n in (7, 22, 16)] + [E(n) for n in ('playground', 'play-night', 'entrance-night')] + [G(n) for n in (35, 12, 41)]),
 ]
 
