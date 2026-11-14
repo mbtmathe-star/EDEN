@@ -350,11 +350,11 @@ def restaurant():
          'Eden on the Grill: a family-friendly restaurant and sports bar in Kimberley with a fully stocked bar, pool table, grills and daily specials.', c, G(3))
 
 def conferences():
-    def venue(n, title, sub, text, pics, rev=False):
+    def venue(n, title, sub, text, pics, rev=False, cls=''):
         ph = ''.join(img(p, f'{title}', w=1280 if i == 0 else 640) for i, p in enumerate(pics))
         if not pics:
             return f'''<div class="venue noimg"><div class="rv"><span class="num">Room {n}</span><h3>{title}</h3><p class="eyebrow" style="margin-bottom:16px">{sub}</p><p>{text}</p></div></div>'''
-        return f'''<div class="venue{' rev' if rev else ''}">
+        return f'''<div class="venue{' rev' if rev else ''}{(' ' + cls) if cls else ''}">
 <div class="venue-img{' one' if len(pics) == 1 else ''} rv">{ph}</div>
 <div class="rv d1"><span class="num">Room {n}</span><h3>{title}</h3><p class="eyebrow" style="margin-bottom:16px">{sub}</p><p>{text}</p></div>
 </div>'''
@@ -367,7 +367,7 @@ def conferences():
 <div class="sec-head center rv"><span class="eyebrow">Our signature venues</span><h2 class="h2">Three rooms, every occasion</h2></div>
 {venue(1, 'The Dynamic Hall', 'Live music &middot; large events', 'Ideal for live music performances and large-scale events, Room 1 offers a spacious, adaptable layout that encourages interaction and enjoyment. Equipped with audio-visual technology and complemented by comprehensive catering, it transforms effortlessly for corporate functions, private parties or entertainment events.', [E('hall-04'), E('hall-08'), E('hall-12')])}
 {venue(2, 'The Elegant Reception Space', 'Weddings &middot; celebrations', 'Perfect for weddings, family celebrations or business gatherings, Room 2 provides a sophisticated setting with expansive interiors and modern audio and video systems. From custom décor to tailored catering, every detail is designed to create a warm and memorable atmosphere.', [E('wed-02'), E('wed-01'), E('wed-03')], rev=True)}
-{venue(3, 'The Professional Meeting Room', 'Meetings &middot; workshops', 'Designed with productivity in mind, Room 3 is the space for business meetings, presentations and workshops. Its modern design and technology ensure a distraction-free environment, with our technical team on hand for anything you need.', [])}
+{venue(3, 'The Professional Meeting Room', 'Meetings &middot; workshops', 'Designed with productivity in mind, Room 3 is the space for business meetings, presentations and workshops. Its modern design and technology ensure a distraction-free environment, with our technical team on hand for anything you need.', [G(28), E('event-lounge'), '/uploads/Room3a.jpg'], cls='office')}
 </div></section>
 {band(E('hall-14'), 'Style &amp; service', 'The perfect blend of <em>style and function</em>')}
 <section class="sec"><div class="wrap">
@@ -387,7 +387,7 @@ def conferences():
 GALLERY = [
     ('lodge', 'The Lodge', 'Rest &amp; unwind', [E(n) for n in ('chalets', 'guest-reading-bed', 'room-green-throw', 'guest-bed-plant', 'room-tray', 'guest-coffee-bed', 'bathroom-shelf', 'guest-reading-tray', 'room-green-throw-2', 'guest-magazine', 'coffee-station', 'room-bed-magazine', 'room-tray-close', 'chalets-2', 'chalets-pool', 'chalets-row')]),
     ('dining', 'Dining &amp; Bar', 'Eden on the Grill', [E(n) for n in ('lounge-night-2', 'patio-lights')] + [G(n) for n in (30, 21, 15)] + [E(n) for n in ('lounge-night', 'garden-dining-2', 'patio-lights-2')] + [G(n) for n in (1, 9, 10, 26)] + [E(n) for n in ('garden-dining', 'garden-night', 'garden-dining-3')] + [G(n) for n in (2, 3, 29)]),
-    ('events', 'Events', 'Conferences &amp; celebrations', [E(n) for n in ('hall-07', 'wed-02', 'hall-04', 'wed-03', 'hall-10', 'hall-05', 'wed-01', 'hall-08', 'hall-11', 'hall-12', 'hall-06', 'hall-09', 'hall-13', 'hall-14')]),
+    ('events', 'Events', 'Conferences &amp; celebrations', [E(n) for n in ('hall-07', 'wed-02', 'hall-04', 'wed-03', 'hall-10', 'hall-05', 'wed-01', 'hall-08', 'hall-11', 'hall-12', 'hall-06', 'hall-09', 'hall-13', 'hall-14')] + [G(28), E('event-lounge'), '/uploads/Room3a.jpg']),
     ('outdoors', 'Outdoors &amp; Play', 'Pool, gardens &amp; play area', [E(n) for n in ('entrance-night-2', 'play-trampoline-night')] + [G(n) for n in (7, 22, 16)] + [E(n) for n in ('playground', 'play-night', 'entrance-night')] + [G(n) for n in (35, 12, 41)]),
 ]
 
