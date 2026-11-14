@@ -371,15 +371,7 @@ def conferences():
 </div></section>
 {band(E('hall-14'), 'Style &amp; service', 'The perfect blend of <em>style and function</em>')}
 <section class="sec"><div class="wrap">
-<div class="sec-head center rv"><span class="eyebrow">Included</span><h2 class="h3">Everything for a seamless event</h2></div>
-<div class="feats">
-<div class="feat rv"><span class="num">01</span><h3>Audio-visual</h3><p>Modern sound, projection and video systems in every venue.</p></div>
-<div class="feat rv d1"><span class="num">02</span><h3>Catering</h3><p>Tailored menus from our own kitchen, from coffee breaks to banquets.</p></div>
-<div class="feat rv d2"><span class="num">03</span><h3>Support</h3><p>A dedicated team on hand to help set up and run your day.</p></div>
-<div class="feat rv"><span class="num">04</span><h3>Accommodation</h3><p>Rooms on site for delegates, speakers and wedding guests.</p></div>
-<div class="feat rv d1"><span class="num">05</span><h3>Parking</h3><p>Secure, free parking for all your guests.</p></div>
-<div class="feat rv d2"><span class="num">06</span><h3>Location</h3><p>5km from Kimberley Airport and 3km from the Diamond Pavilion Mall.</p></div>
-</div></div></section>
+<div class="acc-wrap"><div class="acc-head rv"><h2 class="h3">Everything for a seamless event</h2><p>Every venue comes with the support and extras you need, so you can focus on your guests.</p></div><div class="acc rv d1"><details class="acc-item" open><summary><span class="num">01</span><span class="t">Audio-visual</span><i aria-hidden="true"></i></summary><div class="acc-body"><p>Modern sound, projection and video systems in every venue.</p></div></details><details class="acc-item"><summary><span class="num">02</span><span class="t">Catering</span><i aria-hidden="true"></i></summary><div class="acc-body"><p>Tailored menus from our own kitchen, from coffee breaks to banquets.</p></div></details><details class="acc-item"><summary><span class="num">03</span><span class="t">Support</span><i aria-hidden="true"></i></summary><div class="acc-body"><p>A dedicated team on hand to help set up and run your day.</p></div></details><details class="acc-item"><summary><span class="num">04</span><span class="t">Accommodation</span><i aria-hidden="true"></i></summary><div class="acc-body"><p>Rooms on site for delegates, speakers and wedding guests.</p></div></details><details class="acc-item"><summary><span class="num">05</span><span class="t">Parking</span><i aria-hidden="true"></i></summary><div class="acc-body"><p>Secure, free parking for all your guests.</p></div></details><details class="acc-item"><summary><span class="num">06</span><span class="t">Location</span><i aria-hidden="true"></i></summary><div class="acc-body"><p>5km from Kimberley Airport and 3km from the Diamond Pavilion Mall.</p></div></details></div></div></div></div></section>
 {cta('Plan your event', 'Enquire on availability', 'Contact us to find out more about our venues or to make a booking.', CON + '?kind=Conference%20or%20event#enquire', 'Enquire on Availability')}'''
     page(CONF, 'Conference &amp; Function Venues in Kimberley | Eden',
          'Three conference and function venues in Kimberley for conferences, weddings, live music and meetings, with audio-visual, catering and accommodation on site.', c, E('hall-07'))
