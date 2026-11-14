@@ -552,4 +552,3 @@ img[src*="wed-02"]{object-position:50% 70%}
 img[src*="hall-14"]{object-position:50% 70%}
 img[src*="hall-10"]{object-position:50% 60%}
 .venue.office .venue-img img:not(:first-child){aspect-ratio:4/3}
-img[src*="event-lounge"]{object-position:45% 55%}
