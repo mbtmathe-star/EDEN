@@ -20,6 +20,7 @@ CON = '/p3/contact-us/contact-eden-lodge,-restaurant-and-conference-centre/'
 TP = '/trampoline-park/'
 PRIV = '/p4/privacy-policy.html'
 COOK = '/p4/cookie-policy.html'
+BOOKP = '/p4/booking-policy.html'
 SITE = 'https://welcometoeden.co.za'
 
 TEL, TEL_H = '+27603339333', '+27 60 333 9333'
@@ -139,7 +140,7 @@ def header(path, plain=False):
 <label class="field"><span>I would like to book</span><select name="kind"><option>Accommodation</option><option>Restaurant table</option><option>Conference or event</option><option>Trampoline Park</option></select></label>
 <div class="dates row2"><label class="field"><span class="lbl-in">Check-in</span><input type="date" name="arrive"></label><label class="field"><span class="lbl-out">Check-out</span><input type="date" name="depart"></label></div>
 <label class="field dates"><span>Guests</span><select name="guests"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5 – 10</option><option>10 – 50</option><option>50+</option></select></label>
-<p class="note-box bk-note"><strong>Please note:</strong> children aged 0 – 18 are charged 100% of the sharing rate.</p>
+<p class="note-box bk-note"><strong>Please note:</strong> children aged 0 – 18 are charged 100% of the sharing rate. A 50% deposit secures your booking; see our <a href="{BOOKP}">booking policy</a>.</p>
 <button class="btn solid" type="submit">Continue {ARROW}</button>
 </form>
 </div>
@@ -158,7 +159,7 @@ def footer():
 <div><h4>Eden</h4><ul>{eden}</ul></div>
 <div><h4>Visit</h4><ul><li><a href="tel:{TEL}">{TEL_H}</a></li><li><a href="{WA}">WhatsApp {TEL_H}</a></li><li><a href="mailto:{MAIL}">{MAIL}</a></li><li><a href="{MAP}" target="_blank" rel="noopener">{ADDR}, South Africa</a></li></ul></div>
 </div>
-<div class="ftr-bot"><span>&copy; <span id="yr">2026</span> Eden Est. All rights reserved.</span><nav aria-label="Legal"><a href="{PRIV}">Privacy Policy</a><a href="{COOK}">Cookie Policy</a></nav></div>
+<div class="ftr-bot"><span>&copy; <span id="yr">2026</span> Eden Est. All rights reserved.</span><nav aria-label="Legal"><a href="{BOOKP}">Booking Policy</a><a href="{PRIV}">Privacy Policy</a><a href="{COOK}">Cookie Policy</a></nav></div>
 </div>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
@@ -300,7 +301,7 @@ def accommodation():
     fam = ['A sleeping area with a king-size bed', 'A second area with two &frac34; beds and a corner lounge unit',
            'En-suite bathroom', 'Uncapped Wi-Fi', 'TV with DSTV', 'Air conditioning and ceiling fan',
            'Non-smoking, with a sitting area and desk', 'Bar fridge, coffee and tea facilities', 'Daily cleaning service']
-    note = '<p class="note-box"><strong>Please note:</strong> children aged 0 – 18 are charged 100% of the sharing rate.</p>'
+    note = f'<p class="note-box"><strong>Please note:</strong> children aged 0 – 18 are charged 100% of the sharing rate. Check-in from 14:00, check-out by 10:00. Read our <a href="{BOOKP}">booking, payment &amp; house rules policy</a>.</p>'
     price = '<p class="price"><small>Starting from</small>R750 per room</p>'
     c = f'''{hero(E('guest-reading-tray'), 'Accommodation in Kimberley', 'Your home <em>away from home</em>', 'An exceptional retreat for travellers, families and business professionals alike.')}
 <section class="sec intro center" id="start"><div class="narrow rv">
@@ -429,14 +430,14 @@ def contact():
     page(CON, 'Contact Eden Lodge, Restaurant &amp; Conference Centre | Kimberley',
          'Contact Eden in Kimberley: +27 60 333 9333, WhatsApp or contact@welcometoeden.co.za. 112 Landbou Rd, South Ridge, Kimberley.', c, E('entrance-night-2'))
 
-def legal(path, title, src):
+def legal(path, title, src, heading=None):
     body = open(src, encoding='utf8').read()
     body = re.sub(r'<h1>.*?</h1>', '', body, flags=re.S)
     body = re.sub(r'(<h3>)\s*(<br\s*/?>\s*)+', r'\1', body)
     body = re.sub(r'(\s*<br\s*/?>\s*(&nbsp;)?\s*)+</h3>', '</h3>', body)
     body = re.sub(r'<p>\s*<br\s*/?>\s*', '<p>', body)
     c = f'''<section class="sec" style="padding-top:clamp(140px,16vw,200px)"><div class="narrow legal">
-<span class="eyebrow">Eden Est.</span><h1 class="h2">{title}</h1><span class="rule"></span>
+<span class="eyebrow">Eden Est.</span><h1 class="h2">{heading or title}</h1><span class="rule"></span>
 {body}
 </div></section>'''
     page(path, f'{title} | Eden Guest House and Conference Centre', f'{title} for Eden Guest House and Conference Centre, Kimberley.', c, plain=True)
@@ -461,3 +462,4 @@ if __name__ == '__main__':
                 'Kimberley Trampoline Park | Coming Soon', 'Kimberley Trampoline Park at Eden, Kimberley. Page coming soon.')
     legal(PRIV, 'Privacy Policy', os.path.join(pol, 'privacy.html'))
     legal(COOK, 'Cookie Policy', os.path.join(pol, 'cookie.html'))
+    legal(BOOKP, 'Booking Policy', os.path.join(pol, 'booking.html'), 'Accommodation: Booking, Payment &amp; House Rules')

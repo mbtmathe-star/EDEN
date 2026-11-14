@@ -543,3 +543,5 @@ img[src*="EdenLodgeRestaurantGallery-30"]{object-position:45% 55%}  /* burger */
   .pq-feat .logo-panel{aspect-ratio:4/3}
   .dine-pic img{aspect-ratio:4/3}
 }
+.note-box a{color:var(--green);border-bottom:1px solid var(--yellow)}
+.legal ul{margin:0 0 10px}
