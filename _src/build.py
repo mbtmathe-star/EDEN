@@ -442,8 +442,22 @@ def legal(path, title, src):
     page(path, f'{title} | Eden Guest House and Conference Centre', f'{title} for Eden Guest House and Conference Centre, Kimberley.', c, plain=True)
 
 
+def coming_soon(path, name, photo, line, title, desc):
+    c = f'''{hero(photo, '', name + ' <em>coming soon</em>', line, full=True, cue=False)}
+<section class="sec intro center"><div class="narrow rv">
+<span class="script">Watch this space</span>
+<p class="lead">We are putting the finishing touches to {name}. In the meantime, our team is happy to help with any questions.</p>
+<p style="margin-top:34px"><a class="btn" href="tel:{TEL}">Call {TEL_H} {ARROW}</a> &nbsp; <a class="btn" href="{WA}">WhatsApp us {ARROW}</a></p>
+<p style="margin-top:22px"><a class="link" href="/">Back to Eden</a></p>
+</div></section>'''
+    page(path, title, desc, c, photo)
+
 if __name__ == '__main__':
     pol = os.path.join(os.path.dirname(__file__), 'policies')
-    home(); accommodation(); restaurant(); conferences(); gallery(); contact()
+    home(); accommodation(); conferences(); gallery(); contact()
+    coming_soon(REST, 'Eden on the Grill', G(3), 'Our restaurant and sports bar page is on its way.',
+                'Eden on the Grill | Coming Soon', 'Eden on the Grill restaurant and sports bar in Kimberley. Page coming soon.')
+    coming_soon(TP, 'Kimberley Trampoline Park', E('play-trampoline-night'), 'Jump sessions, parties and group bookings, opening soon on the Eden grounds.',
+                'Kimberley Trampoline Park | Coming Soon', 'Kimberley Trampoline Park at Eden, Kimberley. Page coming soon.')
     legal(PRIV, 'Privacy Policy', os.path.join(pol, 'privacy.html'))
     legal(COOK, 'Cookie Policy', os.path.join(pol, 'cookie.html'))

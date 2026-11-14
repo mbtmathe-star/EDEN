@@ -1,18 +1,84 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Kimberley Trampoline Park – Book</title>
+<title>Kimberley Trampoline Park | Coming Soon</title>
+<meta name="description" content="Kimberley Trampoline Park at Eden, Kimberley. Page coming soon.">
+<link rel="canonical" href="https://welcometoeden.co.za/trampoline-park/">
+<meta property="og:title" content="Kimberley Trampoline Park | Coming Soon">
+<meta property="og:description" content="Kimberley Trampoline Park at Eden, Kimberley. Page coming soon.">
+<meta property="og:image" content="https://welcometoeden.co.za/uploads/eden/play-trampoline-night.jpg">
+<meta name="theme-color" content="#336633">
+<link rel="icon" href="/img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<link rel="icon" href="/trampoline-park/assets/logo.png">
-<link rel="stylesheet" href="/trampoline-park/assets/styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&family=Pinyon+Script&display=swap" rel="stylesheet">
+<script>(function(h){var r=function(){h.classList.add('fonts-ready')};if(document.fonts&&document.fonts.ready)document.fonts.ready.then(r);setTimeout(r,2500)})(document.documentElement)</script>
+<link rel="stylesheet" href="/css/eden.css?v=1c48ab51">
+<link rel="preload" as="image" href="/uploads/eden/play-trampoline-night.jpg">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WWD577N0KL"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-WWD577N0KL');gtag('config','AW-16936927334');</script>
 </head>
 <body>
-<a href="/" style="display:block;background:#336633;color:#fff;text-align:center;padding:6px;font:600 13px system-ui,sans-serif;text-decoration:none">&larr; Back to Eden Lodge, Restaurant &amp; Conference Centre</a>
-<div id="proto"></div><div id="site"></div><div id="pos" hidden></div>
-<script src="/trampoline-park/assets/app.js"></script>
+<a class="skip" href="#main">Skip to content</a>
+<header class="hdr">
+<div class="hdr-in">
+<button class="menu-btn" type="button" data-open="menu" aria-controls="menu"><span class="burger" aria-hidden="true"></span><span class="t">Menu</span></button>
+<a class="logo" href="/" aria-label="Eden home"><img class="lt" src="/img/logo-light.png" alt="Eden — a delightful dwelling" width="360" height="119"><img class="dk" src="/img/logo-dark.png" alt="" width="360" height="119"></a>
+<div class="hdr-r"><a class="hdr-tel" href="tel:+27603339333">+27 60 333 9333</a><a class="btn" href="/p3/contact-us/contact-eden-lodge,-restaurant-and-conference-centre/#enquire" data-open="book">Book now</a></div>
+</div>
+</header>
+<div class="menu" id="menu" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Site menu">
+<div class="menu-top"><img src="/img/logo-green.png" alt="Eden" width="360" height="119"><button class="menu-close" type="button" data-close>Close <i aria-hidden="true"></i></button></div>
+<nav class="menu-body" aria-label="Main">
+<div class="menu-col"><h4>Stay, dine &amp; play</h4><a href="/p11/accommodation/accommodation-in-kimberley/">Accommodation</a><a href="/p12/restaurant/eden-on-the-grill-restaurant/">Restaurant</a><a href="/p13/conferences/conference-and-function-venues-in-kimberley/">Conferences &amp; Events</a><a href="/trampoline-park/" aria-current="page">Trampoline Park</a></div>
+<div class="menu-col"><h4>Eden</h4><a href="/">Home</a><a href="/gallery/">Photo Gallery</a><a href="/p3/contact-us/contact-eden-lodge,-restaurant-and-conference-centre/">Contact Us</a></div>
+</nav>
+<div class="menu-foot"><a href="tel:+27603339333">+27 60 333 9333</a><a href="https://api.whatsapp.com/send?phone=27603339333">WhatsApp</a><a href="mailto:contact@welcometoeden.co.za">contact@welcometoeden.co.za</a><a href="https://maps.app.goo.gl/M81UKrrQJyFEoRz4A" target="_blank" rel="noopener">112 Landbou Rd, South Ridge, Kimberley, 8301</a></div>
+</div>
+<div class="book" id="book" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Booking enquiry">
+<div class="book-bg" data-close></div>
+<div class="book-panel">
+<button class="menu-close" type="button" data-close>Close <i aria-hidden="true"></i></button>
+<h2>Plan your visit</h2>
+<p class="note">Tell us what you have in mind and we will confirm availability with you directly.</p>
+<form id="bookForm" action="/p3/contact-us/contact-eden-lodge,-restaurant-and-conference-centre/">
+<label class="field"><span>I would like to book</span><select name="kind"><option>Accommodation</option><option>Restaurant table</option><option>Conference or event</option><option>Trampoline Park</option></select></label>
+<div class="dates row2"><label class="field"><span class="lbl-in">Check-in</span><input type="date" name="arrive"></label><label class="field"><span class="lbl-out">Check-out</span><input type="date" name="depart"></label></div>
+<label class="field dates"><span>Guests</span><select name="guests"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5 – 10</option><option>10 – 50</option><option>50+</option></select></label>
+<p class="note-box bk-note"><strong>Please note:</strong> children aged 0 – 18 are charged 100% of the sharing rate.</p>
+<button class="btn solid" type="submit">Continue <span class="arr" aria-hidden="true"></span></button>
+</form>
+</div>
+</div>
+<main id="main">
+<section class="hero">
+<img src="/uploads/eden/play-trampoline-night.jpg" alt="" width="1280" height="960" class="hero-img">
+<div class="hero-c">
+<h1><span class="ln"><span>Kimberley Trampoline Park</span></span><span class="ln"><span><em>coming soon</em></span></span></h1>
+<p class="hero-sub">Jump sessions, parties and group bookings, opening soon on the Eden grounds.</p>
+</div>
+</section>
+<section class="sec intro center"><div class="narrow rv">
+<span class="script">Watch this space</span>
+<p class="lead">We are putting the finishing touches to Kimberley Trampoline Park. In the meantime, our team is happy to help with any questions.</p>
+<p style="margin-top:34px"><a class="btn" href="tel:+27603339333">Call +27 60 333 9333 <span class="arr" aria-hidden="true"></span></a> &nbsp; <a class="btn" href="https://api.whatsapp.com/send?phone=27603339333">WhatsApp us <span class="arr" aria-hidden="true"></span></a></p>
+<p style="margin-top:22px"><a class="link" href="/">Back to Eden</a></p>
+</div></section>
+</main>
+<footer class="ftr">
+<div class="wrap">
+<div class="ftr-top">
+<div><img src="/img/logo-light.png" alt="Eden — a delightful dwelling" width="360" height="119" loading="lazy"><p>Lodge, restaurant, conference centre and trampoline park in Kimberley.</p></div>
+<div><h4>Discover</h4><ul><li><a href="/p11/accommodation/accommodation-in-kimberley/">Accommodation</a></li><li><a href="/p12/restaurant/eden-on-the-grill-restaurant/">Restaurant</a></li><li><a href="/p13/conferences/conference-and-function-venues-in-kimberley/">Conferences &amp; Events</a></li><li><a href="/trampoline-park/">Trampoline Park</a></li></ul></div>
+<div><h4>Eden</h4><ul><li><a href="/">Home</a></li><li><a href="/gallery/">Photo Gallery</a></li><li><a href="/p3/contact-us/contact-eden-lodge,-restaurant-and-conference-centre/">Contact Us</a></li></ul></div>
+<div><h4>Visit</h4><ul><li><a href="tel:+27603339333">+27 60 333 9333</a></li><li><a href="https://api.whatsapp.com/send?phone=27603339333">WhatsApp +27 60 333 9333</a></li><li><a href="mailto:contact@welcometoeden.co.za">contact@welcometoeden.co.za</a></li><li><a href="https://maps.app.goo.gl/M81UKrrQJyFEoRz4A" target="_blank" rel="noopener">112 Landbou Rd, South Ridge, Kimberley, 8301, South Africa</a></li></ul></div>
+</div>
+<div class="ftr-bot"><span>&copy; <span id="yr">2026</span> Eden Est. All rights reserved.</span><nav aria-label="Legal"><a href="/p4/privacy-policy.html">Privacy Policy</a><a href="/p4/cookie-policy.html">Cookie Policy</a></nav></div>
+</div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
+<script src="/js/eden.js?v=1ef8e9b7" defer></script>
 </body>
 </html>
